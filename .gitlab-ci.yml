@@ -1,5 +1,5 @@
 # stage : 단계. 우리의 경우에는 build-push와 같은 형태의 하나의 단계만 존재
-stages: 
+stages:
   - dockerbuild-push
 
 package:
@@ -8,10 +8,10 @@ package:
   services:
     - docker:dind
   before_script:
-#docker 로그인
+#Docker 로그인
     - docker login registry.gitlab.com -u $GITLAB_USER -p $GITLAB_PASSWORD
   script:
-    - docker build -t registry.gitlab.com/$GITLAB_USER/likelion-hospital-review .
-    - docker push registry.gitlab.com/$GITLAB_USER/likelion-hospital-review
+    - docker build -t registry.gitlab.com/$GITLAB_USER/$PROJECT_NAME .
+    - docker push registry.gitlab.com/$GITLAB_USER/$PROJECT_NAME
   after_script:
     - docker logout
