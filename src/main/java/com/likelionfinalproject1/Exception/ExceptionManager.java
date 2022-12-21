@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionManager {
 
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e){   // ? 는 모든 값이 올 수 있다는 것
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)      // 서버 에러 상태 메시지와 body에 에러상태 메시지(문자열)을 넣어 반환해줌
-//                .body(Response.error(e.getMessage()));
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e){   // ? 는 모든 값이 올 수 있다는 것
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)      // 서버 에러 상태 메시지와 body에 에러상태 메시지(문자열)을 넣어 반환해줌
+                .body(Response.error(e.getMessage()));
+    }
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> hospitalReviewAppExceptionHandler(AppException e){
