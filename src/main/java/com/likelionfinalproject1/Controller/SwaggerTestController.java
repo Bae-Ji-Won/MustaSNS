@@ -11,6 +11,6 @@ public class SwaggerTestController {
 
     @GetMapping("/hello")
     public String swaggerTest(){
-        return "hello";         // hello 출력
+        return "hello";
     }
 }
