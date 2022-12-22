@@ -8,6 +8,7 @@ package:
     - docker:dind
   before_script:
     - docker login registry.gitlab.com -u $GITLAB_USER -p $GITLAB_PASSWORD
+# 도커 빌드
   script:
     - docker build -t registry.gitlab.com/$GITLAB_USER/$PROJECT_NAME . 
     - docker push registry.gitlab.com/$GITLAB_USER/$PROJECT_NAME
