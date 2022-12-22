@@ -2,6 +2,9 @@ stages:
   - dockerbuild-push
 
 package:
+# main에 merge 했을때만 파이프라인 동작
+  only:
+    - main
   image: docker:latest
   stage: dockerbuild-push
   services:
