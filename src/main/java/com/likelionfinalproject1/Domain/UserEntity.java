@@ -1,14 +1,11 @@
 package com.likelionfinalproject1.Domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @AllArgsConstructor
@@ -16,7 +13,11 @@ import java.sql.Timestamp;
 @Getter
 @Builder
 @Entity
-public class UserEntity {
+@Setter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@EntityListeners(AuditingEntityListener.class)
+public class UserEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            // 키 값
@@ -24,7 +25,4 @@ public class UserEntity {
     private String role;        // 권한
     private String userName;    // 유저 아이디
 
-    private Timestamp deletedAt;    // 계정 삭제 시간
-    private Timestamp registeredAt;     // 계정 생성 시간
-    private Timestamp updatedAt;        // 계정 수정 시간
 }
