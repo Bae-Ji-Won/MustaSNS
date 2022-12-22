@@ -28,9 +28,9 @@ public class UserService {
 
     // 회원가입 기능
     public UserJoinDao join(UserJoinRequest userJoinRequest){
-        userRepository.findByUserName(userJoinRequest.getUsername())
+        userRepository.findByUserName(userJoinRequest.getUserName())
                 .ifPresent(userEntity -> {
-                    throw new AppException(ErrorCode.DUPLICATED_USER_NAME,String.format(userJoinRequest.getUsername())+"는 이미 있습니다.");
+                    throw new AppException(ErrorCode.DUPLICATED_USER_NAME,String.format(userJoinRequest.getUserName())+"는 이미 있습니다.");
                 });
 
         UserEntity userEntity = userRepository.save(userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword())));
@@ -40,7 +40,7 @@ public class UserService {
 
     // 로그인 기능
     public String login(UserLoginRequest userLoginRequest){
-        String username = userLoginRequest.getUsername();
+        String username = userLoginRequest.getUserName();
         String password = userLoginRequest.getPassword();
 
         log.info("사용자가 입력한 username : "+username);
