@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .cors()   //  다른 도메인의 리소스에 대해 접근이 허용되는지 체크
                 .and()  // 묶음 구분(httpBasic(),crsf,cors가 한묶음)
                 .authorizeRequests()    // 각 경로 path별 권한 처리
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
                 .antMatchers("/api/v1/**").authenticated()  // 문 만들기(인증이 있어야 접근이 가능한 곳)
                 .and()
                 .sessionManagement()        // 세션 관리 기능을 작동한다.      .maximunSessions(숫자)로 최대 허용가능 세션 수를 정할수 있다.(-1로 하면 무제한 허용)
