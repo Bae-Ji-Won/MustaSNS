@@ -1,15 +1,30 @@
 package com.likelionfinalproject1.Configuration;
 
+
+import com.likelionfinalproject1.Service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
-@Configuration
+// SecurityFilterChain 기본 설정파일
+// 이전에는 WebSecurityConfigurerAdapter를 상속받아 사용했지만 이제는 Bean폴더를 만들어서 사용함
+
+@EnableWebSecurity  // 스프링 시큐리티를 활성화하는 어노테이션
+@Configuration      // 스프링의 기본 설정 정보들의 환경 세팅을 돕는 어노테이션
+@RequiredArgsConstructor
+// @EnableGlobalMethodSecurity(prePostEnabled = true)  // Controller에서 특정 페이지에 권한이 있는 유저만 접근을 허용할 경우
 public class SecurityConfig {
+
+    private final UserService userService;
+
+    @Value("${jwt.token.secret}")
+    private String secretKey;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -19,14 +34,15 @@ public class SecurityConfig {
                 .cors()   //  다른 도메인의 리소스에 대해 접근이 허용되는지 체크
                 .and()  // 묶음 구분(httpBasic(),crsf,cors가 한묶음)
                 .authorizeRequests()    // 각 경로 path별 권한 처리
-                .antMatchers("/api/**").permitAll()         // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers("/api/v1/**").authenticated()  // 문 만들기(인증이 있어야 접근이 가능한 곳)
                 .and()
                 .sessionManagement()        // 세션 관리 기능을 작동한다.      .maximunSessions(숫자)로 최대 허용가능 세션 수를 정할수 있다.(-1로 하면 무제한 허용)
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt사용하는 경우 씀(STATELESS는 인증 정보를 서버에 담지 않는다.)
                 .and()
-                //   .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
-                //UserNamePasswordAuthenticationFilter적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
+                // UserNamePasswordAuthenticationFilter(로그인 필터)적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
+                // 로그인하기 전에 토큰을 받아 인가를 부여해주기 위한 기능
+                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

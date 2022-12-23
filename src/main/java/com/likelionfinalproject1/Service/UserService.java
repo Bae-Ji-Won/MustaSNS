@@ -57,4 +57,9 @@ public class UserService {
         // 아이디가 존재하고 비밀번호도 일치할때
         return JwtTokenUtil.createToken(username,expireTimeMs,secretkey);
     }
+
+    public UserEntity getUserByUserName(String userName) {
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,null));
+    }
 }

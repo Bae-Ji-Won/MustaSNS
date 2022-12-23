@@ -1,6 +1,7 @@
 package com.likelionfinalproject1.Domain.dto;
 
 import com.likelionfinalproject1.Domain.UserEntity;
+import com.likelionfinalproject1.Domain.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ public class UserJoinDao {
     private Long id;
     private String username;
     private String password;
-    private String role;
+    private UserRole role;
 
     public static UserJoinDao fromEntity(UserEntity userEntity){
         UserJoinDao userDao = UserJoinDao.builder()

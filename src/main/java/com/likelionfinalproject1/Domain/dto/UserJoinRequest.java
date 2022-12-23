@@ -1,6 +1,7 @@
 package com.likelionfinalproject1.Domain.dto;
 
 import com.likelionfinalproject1.Domain.UserEntity;
+import com.likelionfinalproject1.Domain.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class UserJoinRequest {
         UserEntity userEntity = UserEntity.builder()
                 .userName(this.userName)
                 .password(pwd)
-                .role("일반회원")           // 관리자를 제외한 회원은 모두 일반회원이므로 default값으로 저장
+                .role(UserRole.USER)           // 관리자를 제외한 회원은 모두 일반회원이므로 default값으로 저장
                 .build();
 
         return userEntity;
