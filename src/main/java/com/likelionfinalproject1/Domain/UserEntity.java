@@ -22,7 +22,8 @@ public class UserEntity extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            // 키 값
     private String password;    // 비밀번호
-    private String role;        // 권한
     private String userName;    // 유저 아이디
 
+    @Enumerated(EnumType.STRING)    // Enum 클래스인 UserRole의 값을 받아와 저장함
+    private UserRole role;        // 권한
 }
