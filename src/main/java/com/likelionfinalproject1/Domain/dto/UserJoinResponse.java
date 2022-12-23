@@ -6,6 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class UserJoinResponse {
-    private Long userid;
-    private String username;
+    private Long userId;
+    private String userName;
 }
