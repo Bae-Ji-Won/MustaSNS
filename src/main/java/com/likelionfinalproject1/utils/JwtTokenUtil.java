@@ -40,7 +40,6 @@ public class JwtTokenUtil {
                 .setIssuedAt(new Date(System.currentTimeMillis()))      //  시작 시간 : 현재 시간기준으로 만들어짐
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))     // 끝나는 시간 : 지금 시간 + 정해둔 시간
                 .signWith(SignatureAlgorithm.HS256, key)        //  암호화 알고리즘, secret 값 세팅
-                .compact()
-                ;
+                .compact();
     }
 }
