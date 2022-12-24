@@ -37,7 +37,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);    // 외부에서 header에 인증 AUTHORIZATION 값(Bearer 토큰) 담아 전송하는 것을 받을 수 있다.
         log.info("authorizationHeader:{}",authorizationHeader);
 
-        // 정상적인 토큰이 없는 경우(접근 차단)
+        // 정상적인 토큰이 없는 경우나 토큰이 Bearer로 시작하지 않는 경우(접근 차단)
         // 만약 Header에 토큰이 없거나 토큰이 Bearer로 시작하지 않다면 null을 반환하여 다음 체인(기능)으로 이동
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
