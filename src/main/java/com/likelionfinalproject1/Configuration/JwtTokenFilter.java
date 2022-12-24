@@ -28,6 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final UserService userService;
     private final String secretKey;     // 외부에서 받아오는 키와 개발자의 고유키가 일치하는지 확인하기 위해 secretKey가 필요함
+                                        // SecurityConfig에서 SecretKey를 받아와 생성자를 통해 저장함
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
