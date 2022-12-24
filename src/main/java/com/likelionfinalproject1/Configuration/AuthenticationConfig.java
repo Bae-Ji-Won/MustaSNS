@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration      // 스프링의 기본 설정 정보들의 환경 세팅을 돕는 어노테이션
 @RequiredArgsConstructor
 // @EnableGlobalMethodSecurity(prePostEnabled = true)  // Controller에서 특정 페이지에 권한이 있는 유저만 접근을 허용할 경우
-public class SecurityConfig {
+public class AuthenticationConfig {
 
     private final UserService userService;
 
