@@ -1,5 +1,5 @@
-# LikeLion-FinalProject-1
-
+# 웹페이지 구현하기 Project
+## 개발 환경
 
 <hr>
 ## 🙏 Commit 규칙 
