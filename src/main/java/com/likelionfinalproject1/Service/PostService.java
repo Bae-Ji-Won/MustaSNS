@@ -4,6 +4,7 @@ import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateRequest;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateResponse;
+import com.likelionfinalproject1.Domain.dto.Post.PostListResponse;
 import com.likelionfinalproject1.Domain.dto.Post.PostOneResponse;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
@@ -44,9 +45,10 @@ public class PostService {
     }
 
     // 포스트 리스트 모두 호출
-    public Page<Post> findAllByPage(Pageable pageable) {
+    public Page<PostListResponse> findAllByPage(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);        // 모든 데이터 호출
-        return posts;
+        Page<PostListResponse> postListResponses = new PostListResponse().toDtoList(posts);     // Page<Entity> -> Page<Dto>변경
+        return postListResponses;
     }
 
 }
