@@ -2,7 +2,6 @@ package com.likelionfinalproject1.Service;
 
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
-import com.likelionfinalproject1.Domain.Visit;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateRequest;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateResponse;
 import com.likelionfinalproject1.Domain.dto.Post.PostOneResponse;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
 
 
 @Service
