@@ -1,12 +1,10 @@
-package com.likelionfinalproject1.Domain;
+package com.likelionfinalproject1.Domain.Entity;
 
+import com.likelionfinalproject1.Domain.UserRole;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,10 +12,11 @@ import java.sql.Timestamp;
 @Builder
 @Entity
 @Setter
+// 아래의 어노테이션은 BaseTimeEntity 클래스를 상속받아 해당 변수들을 받아와 DB에 저장함
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @EntityListeners(AuditingEntityListener.class)
-public class UserEntity extends BaseTimeEntity{
+public class User extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            // 키 값
