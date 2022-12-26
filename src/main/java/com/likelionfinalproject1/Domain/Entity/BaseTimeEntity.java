@@ -24,9 +24,9 @@ import java.sql.Timestamp;
 public class BaseTimeEntity {
     @CreatedDate            // 데이터 생성 날짜를 자동으로 주입
     @Column(updatable = false)  // 해당 열은 업데이트 불가(다른 데이터가 수정되어 해당 데이터는 고정)
-    private Timestamp updatedAt;        // 계정 수정 시간
-    @LastModifiedDate       // 데이터 수정 날짜를 자동으로 주입
     private Timestamp registeredAt;     // 계정 생성 시간
+    @LastModifiedDate       // 데이터 수정 날짜를 자동으로 주입
+    private Timestamp updatedAt;        // 계정 수정 시간
 
     private Timestamp deletedAt;    // 계정 삭제 시간
 }
