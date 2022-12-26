@@ -4,6 +4,7 @@ import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateRequest;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateResponse;
+import com.likelionfinalproject1.Domain.dto.Post.PostListResponse;
 import com.likelionfinalproject1.Domain.dto.Post.PostOneResponse;
 import com.likelionfinalproject1.Service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class PostController {
 
     // 포스트 리스트(전체 리스트)
     @GetMapping
-    public Response<Page<Post>> getPostList(Pageable pageable){
-        Page<Post> postpage = postService.findAllByPage(pageable);
+    public Response<Page<PostListResponse>> getPostList(Pageable pageable){
+        Page<PostListResponse> postpage = postService.findAllByPage(pageable);
         return Response.success(postpage);
     }
 }
