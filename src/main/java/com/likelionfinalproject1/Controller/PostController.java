@@ -2,12 +2,10 @@ package com.likelionfinalproject1.Controller;
 
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Response;
-import com.likelionfinalproject1.Domain.dto.Post.PostCreateRequest;
-import com.likelionfinalproject1.Domain.dto.Post.PostCreateResponse;
-import com.likelionfinalproject1.Domain.dto.Post.PostListResponse;
-import com.likelionfinalproject1.Domain.dto.Post.PostOneResponse;
+import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -39,5 +38,12 @@ public class PostController {
     public Response<Page<PostListResponse>> getPostList(Pageable pageable){
         Page<PostListResponse> postpage = postService.findAllByPage(pageable);
         return Response.success(postpage);
+    }
+
+    // 게시글 수정
+    @PutMapping("/{id}")
+    public Response<PostUpdateResponse> postUpdate(@PathVariable Long id,@RequestBody PostCreateRequest request, Authentication authentication){
+        String userName = authentication.getName();
+        return Response.success(postService.postupdate(id,request,userName));
     }
 }
