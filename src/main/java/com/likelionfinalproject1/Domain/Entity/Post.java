@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Builder
+@Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @EntityListeners(AuditingEntityListener.class)
