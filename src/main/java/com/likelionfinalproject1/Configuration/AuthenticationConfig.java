@@ -1,11 +1,13 @@
 package com.likelionfinalproject1.Configuration;
 
 
+import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,8 +36,10 @@ public class AuthenticationConfig {
                 .cors()   //  다른 도메인의 리소스에 대해 접근이 허용되는지 체크
                 .and()  // 묶음 구분(httpBasic(),crsf,cors가 한묶음)
                 .authorizeRequests()    // 각 경로 path별 권한 처리
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello","/api/v1/posts/{postsId}").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()  // Rest Api가 Post에 해당하는 것만 허용
                 .antMatchers("/api/v1/**").authenticated()  // 문 만들기(인증이 있어야 접근이 가능한 곳)
+                // .antMatchers("/api/**").hasRole(UserRole.USER.name()) // ROLE 역할 체크
                 .and()
                 .sessionManagement()        // 세션 관리 기능을 작동한다.      .maximunSessions(숫자)로 최대 허용가능 세션 수를 정할수 있다.(-1로 하면 무제한 허용)
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt사용하는 경우 씀(STATELESS는 인증 정보를 서버에 담지 않는다.)

@@ -1,6 +1,5 @@
-package com.likelionfinalproject1.Domain.dto;
+package com.likelionfinalproject1.Domain.dto.User;
 
-import com.likelionfinalproject1.Domain.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

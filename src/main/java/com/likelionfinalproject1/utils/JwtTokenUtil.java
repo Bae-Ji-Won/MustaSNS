@@ -22,6 +22,7 @@ public class JwtTokenUtil {
     // 추출된 토큰에서 userName 찾기
     public static String getUserName(String token,String secretkey){
         return extractClaims(token, secretkey).get("userName").toString();  // 풀어낸 토큰값중 userName의 값을 반환해줌
+   //     return extractClaims(token, secretkey).get("userName",String.class);  // 위에꺼랑 같은 의미임
     }
 
     // 추출된 토큰에서 토큰날짜 찾기

@@ -1,7 +1,7 @@
 package com.likelionfinalproject1.Controller;
 
 import com.likelionfinalproject1.Domain.Response;
-import com.likelionfinalproject1.Domain.dto.*;
+import com.likelionfinalproject1.Domain.dto.User.*;
 import com.likelionfinalproject1.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

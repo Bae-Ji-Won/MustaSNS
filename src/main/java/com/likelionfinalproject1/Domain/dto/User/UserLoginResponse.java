@@ -1,4 +1,4 @@
-package com.likelionfinalproject1.Domain.dto;
+package com.likelionfinalproject1.Domain.dto.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

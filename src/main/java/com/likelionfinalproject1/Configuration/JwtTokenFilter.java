@@ -1,6 +1,6 @@
 package com.likelionfinalproject1.Configuration;
 
-import com.likelionfinalproject1.Domain.UserEntity;
+import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Service.UserService;
 import com.likelionfinalproject1.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +37,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);    // 외부에서 header에 인증 AUTHORIZATION 값(Bearer 토큰) 담아 전송하는 것을 받을 수 있다.
         log.info("authorizationHeader:{}",authorizationHeader);
 
-        // 정상적인 토큰이 없는 경우나 토큰이 Bearer로 시작하지 않는 경우(접근 차단)
+        // 토큰이 없는 경우나 토큰이 Bearer로 시작하지 않는 경우(접근 차단)
         // 만약 Header에 토큰이 없거나 토큰이 Bearer로 시작하지 않다면 null을 반환하여 다음 체인(기능)으로 이동
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            // throw new AppException(ErrorCode.INVALID_TOKEN,ErrorCode.INVALID_TOKEN.getMessage());
             return;
         }
 
@@ -68,7 +69,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         log.info("userName:{}",userName);
 
         // UserDetail 가져오기
-        UserEntity user = userService.getUserByUserName(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
+        User user = userService.getUserByUserName(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
         log.info("userRole :{}",user.getRole());
 
 // 문 열어주는 곳(인가 허용)
