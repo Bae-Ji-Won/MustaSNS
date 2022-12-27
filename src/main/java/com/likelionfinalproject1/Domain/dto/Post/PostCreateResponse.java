@@ -18,7 +18,7 @@ public class PostCreateResponse {
     }
 
     public static PostCreateResponse success(Long id){
-        return new PostCreateResponse("포스트 등록 성공",id);
+        return new PostCreateResponse("포스트 등록 완료",id);
     }
 
 }
