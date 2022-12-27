@@ -34,12 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-@WebAppConfiguration
 class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-    @MockBean   // Bean파일 의존
+    @MockBean   // 가짜 객체
     UserService userService;    // UserService Bean 파일 의존
     @MockBean
     BCryptPasswordEncoder encoder;
@@ -87,7 +86,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 실패")
+    @DisplayName("회원가입 실패 : username 중복")
     @WithMockUser
     void createUser_fail() throws Exception {
         setup();

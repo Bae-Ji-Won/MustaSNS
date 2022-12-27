@@ -3,14 +3,15 @@ package com.likelionfinalproject1.Domain.dto.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+// Update, Delete에 대한 Response
 @AllArgsConstructor
 @Getter
-public class PostUpdateResponse {
+public class PostChangeResponse {
     private String message;
     private Long postId;
     
 
-    public static PostUpdateResponse success(Long id){
-        return new PostUpdateResponse("포스트 수정 완료",id);
+    public static PostChangeResponse success(String str, Long id){
+        return new PostChangeResponse(str,id);
     }
 }

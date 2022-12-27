@@ -1,6 +1,5 @@
 package com.likelionfinalproject1.Controller;
 
-import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Service.PostService;
@@ -42,8 +41,15 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public Response<PostUpdateResponse> postUpdate(@PathVariable Long id,@RequestBody PostCreateRequest request, Authentication authentication){
+    public Response<PostChangeResponse> postUpdate(@PathVariable Long id, @RequestBody PostCreateRequest request, Authentication authentication){
         String userName = authentication.getName();
         return Response.success(postService.postupdate(id,request,userName));
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/{id}")
+    public Response<PostChangeResponse> postDelete(@PathVariable Long id,Authentication authentication){
+        String userName = authentication.getName();
+        return Response.success(postService.postdelete(id,userName));
     }
 }

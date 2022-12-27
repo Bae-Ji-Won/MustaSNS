@@ -2,6 +2,7 @@ package com.likelionfinalproject1.Service;
 
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
+import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
@@ -53,15 +54,17 @@ public class PostService {
     }
 
     // 포스트 게시물 수정
-    public PostUpdateResponse postupdate(Long id, PostCreateRequest request, String userName) {
+    public PostChangeResponse postupdate(Long id, PostCreateRequest request, String userName) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));     // DB에 해당 id의 데이터가 없을경우 에외처리
 
         User user = userRepository.findByUserName(userName)                 // 포스트는 있으나 유저가 없을경우
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        if(!userName.equals(post.getUserId().getUserName())){     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
-            throw new AppException(ErrorCode.INVALID_PERMISSION);
+        if(user.getRole() != UserRole.ADMIN) {      // 현재 토큰의 유저의 권한이 ADMIN이 아닐때
+            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
+                throw new AppException(ErrorCode.INVALID_PERMISSION);
+            }
         }
 
         if(!request.getTitle().equals(post.getTitle())){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
@@ -73,6 +76,29 @@ public class PostService {
 
         postRepository.save(post);
 
-        return PostUpdateResponse.success(post.getId());    // 정상동작시 "등록 완료" 출력
+        String str = "포스트 수정 완료";
+        return PostChangeResponse.success(str,post.getId());    // 정상동작시 "등록 완료" 출력
+    }
+
+
+    // 게시물 삭제
+    public PostChangeResponse postdelete(Long id, String userName) {
+        User user = userRepository.findByUserName(userName)     // 토큰의 유저에 대한 유저 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+        Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+
+        if(user.getRole() != UserRole.ADMIN) {          // 토큰의 유저에 대한 권한을 비교함(관리자가 아닐때)
+            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
+                throw new AppException(ErrorCode.INVALID_PERMISSION);
+            }
+        }
+
+        postRepository.delete(post);
+
+        String str = "포스트 삭제 완료";
+
+        return PostChangeResponse.success(str,post.getId());
     }
 }
