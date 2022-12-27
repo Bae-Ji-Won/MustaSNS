@@ -46,7 +46,7 @@ public class UserService {
         log.info("사용자가 입력한 username : "+username);
         User user = userRepository.findByUserName(username)     // 유저가 입력한 데이터의 아이디를 가지고 DB에서 데이터를 찾음
                 // 아이디가 존재하지 않을때
-                .orElseThrow(()->new AppException(ErrorCode.USERNAME_NOTFOUND));
+                .orElseThrow(()->new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
 
         // 아이디가 존재하지만 비밀번호가 틀릴때
