@@ -18,7 +18,7 @@ public class PostOneResponse {
     private String title;
     private String body;
     private String userName;
-    private Timestamp createAt;
+    private Timestamp createdAt;
     private Timestamp lastModifiedAt;
 
     public PostOneResponse fromEntity(Post post, String userName){
@@ -27,7 +27,7 @@ public class PostOneResponse {
                 .title(post.getTitle())
                 .body(post.getBody())
                 .userName(userName)
-                .createAt(post.getRegisteredAt())
+                .createdAt(post.getRegisteredAt())
                 .lastModifiedAt(post.getUpdatedAt())
                 .build();
     }
