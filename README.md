@@ -45,7 +45,7 @@
 ![dd](/uploads/de457db5be35cd2c2e098aab67775b85/dd.png)
 
 ## 4. ERD
-![image](/uploads/d0c68c3e8a05fa8017c8bf4995369016/image.png)
+![image](/uploads/67f53a918ebedbbeae4fc4069db185e5/image.png)
 
 
 ## 🙏 Commit 규칙
