@@ -53,7 +53,7 @@
 
 ```jsx
 소문자로 작성!
-    git commit -m "feat/갤러리 무한스크롤 기능 구현"
+    git commit -m "[feat]갤러리 무한스크롤 기능 구현"
 ```
 
 |  | 유형 | 설명 |
