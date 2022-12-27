@@ -11,6 +11,6 @@ public class SwaggerTestController {
 
     @GetMapping("/hello")
     public String swaggerTest(){
-        return "happy_new_year";
+        return "배지원";
     }
 }
