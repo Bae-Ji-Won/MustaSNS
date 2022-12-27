@@ -1,8 +1,18 @@
 # 웹페이지 구현하기 Project
-Swagger Url : http://ec2-44-199-204-56.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
-EndPoint :  https://gitlab.com/qowl880/finalproject-baejiwon/-/issues  [API별 세부 내용은 IssueS에 작성했습니다.]   
 
-## 1. 개발 환경
+## 1. Swagger
+(1) Local Url : http://localhost:8080/swagger-ui/
+<br>
+(2) Ec2 Url : http://ec2-44-199-204-56.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
+
+
+## 2. 아키텍처
+![dd](/uploads/de457db5be35cd2c2e098aab67775b85/dd.png)
+
+## 3. ERD
+<img src="/uploads/67f53a918ebedbbeae4fc4069db185e5/image.png" width="400"></img>
+
+## 4. 개발 환경
 - 에디터 : Intellij Ultimate
 - 개발 툴 : SpringBoot 2.7.5
 - 자바 : JAVA 11
@@ -13,7 +23,7 @@ EndPoint :  https://gitlab.com/qowl880/finalproject-baejiwon/-/issues  [API별 �
 - 필수 라이브러리 : SpringBoot Web, MySQL, Spring Data JPA, Lombok, Spring Security
 
 
-## 2. 서비스 종류
+## 5. 서비스 종류
 (1) 회원 인증,인가
 - 모든 회원은 회원가입을 통해 회원이 됩니다.
 - 로그인을 하지 않으면 SNS 기능 중 피드를 보는 기능만 가능합니다.
@@ -44,11 +54,8 @@ EndPoint :  https://gitlab.com/qowl880/finalproject-baejiwon/-/issues  [API별 �
 - 알림 목록에서 자신이 쓴 글에 달린 댓글과 좋아요를 확인할 수 있습니다.
 
 
-## 3. 아키텍처
-![dd](/uploads/de457db5be35cd2c2e098aab67775b85/dd.png)
-
-## 4. ERD
-<img src="/uploads/67f53a918ebedbbeae4fc4069db185e5/image.png" width="400"></img>
+## 6. EndPoint
+https://gitlab.com/qowl880/finalproject-baejiwon/-/issues  [API별 세부 내용은 IssueS에 작성했습니다.] 
 
 
 
