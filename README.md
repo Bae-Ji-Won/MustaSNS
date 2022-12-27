@@ -55,9 +55,42 @@
 
 
 ## 6. EndPoint
-https://gitlab.com/qowl880/finalproject-baejiwon/-/issues  [API별 세부 내용은 IssueS에 작성했습니다.] 
+https://gitlab.com/qowl880/finalproject-baejiwon/-/issues<br> [API별 세부 내용은 Issues에 작성했습니다.] 
 
+> 로그인
 
+Api url : POST /api/v1/users/login
+<br>ex) http://localhost:8080/api/v1/users/login
+
+> 회원가입
+
+Api url : POST /api/v1/users/join
+<br>ex) http://localhost:8080/api/v1/users/join
+
+> 게시물 상세 조회 기능
+
+Api url : GET /api/v1/posts/{postsId}
+<br>ex) http://localhost:8080/api/v1/posts/{postsId}
+
+> 게시물 전체 조회 기능
+
+Api url : GET /api/v1/posts
+<br>ex) http://localhost:8080/api/v1/posts
+
+> 게시물 작성
+
+Api url : POST /api/v1/posts
+<br>ex) http://localhost:8080/api/v1/posts
+
+> 게시물 수정
+
+Api url : PUT /api/v1/posts/{id}
+<br>ex) http://localhost:8080/api/v1/posts/{id}
+
+> 게시물 삭제
+
+Api url : DELETE /api/v1/posts/{id}
+<br>ex) http://localhost:8080/api/v1/posts/{id}
 
 ## 🙏 Commit 규칙
 
