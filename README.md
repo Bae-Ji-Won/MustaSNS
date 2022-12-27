@@ -45,7 +45,7 @@
 ![image](https://user-images.githubusercontent.com/82360230/209614061-41fc6c31-0d70-40c2-b2aa-b2e13865d045.png)
 
 ## 4. ERD
-![image](https://user-images.githubusercontent.com/82360230/209614388-6c5b999a-69d8-4566-a630-a3933d8b4468.png)
+<img src ="https://user-images.githubusercontent.com/82360230/209614388-6c5b999a-69d8-4566-a630-a3933d8b4468.png" width="400"></img>
 
 
 ## 🙏 Commit 규칙
