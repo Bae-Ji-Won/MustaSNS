@@ -1,7 +1,6 @@
 # 웹페이지 구현하기 Project
-Swagger Url : http://ec2-44-199-204-56.compute-1.amazonaws.com:8080/swagger-ui/index.html <br>
-EndPoint : API별 세부 내용은 IssueS에 작성했습니다.<br>
-https://gitlab.com/qowl880/finalproject-baejiwon/-/issues
+Swagger Url : http://ec2-44-199-204-56.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
+EndPoint : [API별 세부 내용은 IssueS에 작성했습니다.]   https://gitlab.com/qowl880/finalproject-baejiwon/-/issues
 
 ## 1. 개발 환경
 - 에디터 : Intellij Ultimate
