@@ -30,8 +30,8 @@
         - Body {”role”:”admin” | “user”} admin 또는 user로 변경할 수 있습니다.<br>
 ☑ ADMIN 회원이 로그인 시 자신이 쓴 글이 아닌 글과 댓글에 수정, 삭제를 할 수 있는 기능
 
-## 5. 주차별 구현한 서비스 종류 
-https://gitlab.com/qowl880/finalproject-baejiwon/-/issues<br> [주차별 세부 내용은 Issues에 작성했습니다.]
+## 5. 일차별 구현한 서비스 종류 
+https://gitlab.com/qowl880/finalproject-baejiwon/-/issues<br> [일차별 세부 내용은 Issues에 작성했습니다.]
 
 > #### 1일차
 (1) Swagger
