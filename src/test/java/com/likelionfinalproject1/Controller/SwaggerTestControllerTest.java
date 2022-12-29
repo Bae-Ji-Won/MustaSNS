@@ -32,7 +32,7 @@ class SwaggerTestControllerTest {
         given(algorithmService.sumOfDigit(any()))
                 .willReturn(6);
 
-        mockMvc.perform(get("/api/v1/hello/123")
+        mockMvc.perform(get("/api/v1/123")
                 .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
