@@ -8,8 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -19,7 +17,9 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @ToString
-@MappedSuperclass
+// @MappedSuperclass = 부모클래스를 데이터베이스 테이블로 매핑하지 않고 자식 클래스에게 매핑 정보만 제공할때 사용
+// 즉, BaseTimeEntity 클래스를 사용 안함
+@MappedSuperclass       
 @EntityListeners(AuditingEntityListener.class)
 //  MappedSuperclass = JPA의 에니티 클래스가 상속받을 경우 자식 클래스에게 매핑 정보를 전달함
 //  EntityListeners = 엔티티를 데이터베이스에 적용하기 전후로 콜백을 요청할 수 있게하는 어노테이션
@@ -38,6 +38,7 @@ public class BaseTimeEntity {
 
     @PrePersist     // 해당 엔티티를 저장하기 이전에 실행
     public void onPrePersist(){
+        // 나라를 설정하지 않고 시간을 설정하면 초단위에서 오류가 발생하여 측정이 되지 않음 따라서, ZonedDateTime를 사용하여 나라를 지정함
         this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
         this.lastModifiedAt = this.createdAt;
     }
