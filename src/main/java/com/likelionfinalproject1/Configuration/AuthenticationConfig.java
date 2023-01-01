@@ -47,6 +47,9 @@ public class AuthenticationConfig {
                 // UserNamePasswordAuthenticationFilter(로그인 필터)적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
                 // 로그인하기 전에 토큰을 받아 인가를 부여해주기 위한 기능
                 .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                // JwtTokenFilter 실행전에 JwtTokenExceptionFilter(토큰 에러 필터)를 먼저 실행하라
+                // 토큰 에러필터에서 만약 에러가 걸리면 json형식으로 출력하고 토큰 에러필터에서 걸리지 않는다면 JwtTokenFilter로 넘어가서 인가를 할 수 있도록 기능을 실행한다.
+                .addFilterBefore(new JwtTokenExceptionFilter(),JwtTokenFilter.class)
                 .build();
     }
 }
