@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -19,8 +20,8 @@ public class PostListResponse {
     private String title;
     private String body;
     private String userName;
-    private Timestamp createdAt;
-    private Timestamp lastModifiedAt;
+    private String createdAt;
+    private String lastModifiedAt;
     
     public Page<PostListResponse> toDtoList(Page<Post> postList){
         // Page<Post>에 저장된 값들을 Page<PostListResponse>형식으로 변환함
@@ -30,8 +31,8 @@ public class PostListResponse {
                 .title(m.getTitle())
                 .body(m.getBody())
                 .userName(m.getUserId().getUserName())
-                .createdAt(m.getRegisteredAt())
-                .lastModifiedAt(m.getUpdatedAt())
+                .createdAt(m.getCreatedAt())
+                .lastModifiedAt(m.getLastModifiedAt())
                 .build());
         return boardDtoList;
     }
