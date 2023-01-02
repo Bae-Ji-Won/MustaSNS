@@ -47,18 +47,18 @@ public class JwtTokenExceptionFilter extends OncePerRequestFilter {
         }
     }
 
+    
+    // Json 형식으로 에러 코드 반환하기 위한 메서드
     private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
 
-        response.setStatus(errorCode.getHttpStatus().value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
+        response.setStatus(errorCode.getHttpStatus().value());          // 에러 상태코드 
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);      // 문자 타입 Json형식 설정
+        response.setCharacterEncoding("UTF-8");                         // 한글로 반환
 
-        ObjectMapper objectMapper = new ObjectMapper();
-//        Gson gson = new Gson();
+        ObjectMapper objectMapper = new ObjectMapper();                 // Json형식으로 값을 반환하기 위해 ObjectMapper 사용
 
         ErrorResponse errorResponse = new ErrorResponse(errorCode);
         response.getWriter().write(objectMapper.writeValueAsString(Response.error(errorResponse)));
-//        response.getWriter().write(gson.toJson(Response.error("ERROR",errorResponse)));
 
     }
 
