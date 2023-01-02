@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -20,6 +22,7 @@ public class PostController {
     private final PostService postService;
 
     // 포스트 작성하기
+    @Transactional      // 에러 발생하면 롤백시켜 실행전 상태로 만든다.
     @PostMapping
     public Response<PostCreateResponse> postCreate(@RequestBody PostCreateRequest postCreateRequest,Authentication authentication){
         String userName = authentication.getName();     // 토큰에서 userName 추출

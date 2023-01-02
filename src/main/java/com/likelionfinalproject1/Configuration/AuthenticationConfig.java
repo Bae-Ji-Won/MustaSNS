@@ -36,7 +36,7 @@ public class AuthenticationConfig {
                 .cors()   //  다른 도메인의 리소스에 대해 접근이 허용되는지 체크
                 .and()  // 묶음 구분(httpBasic(),crsf,cors가 한묶음)
                 .authorizeRequests()    // 각 경로 path별 권한 처리
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello","/api/v1/posts/{postsId}").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello/*","/api/v1/posts/{postsId}").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
                 .antMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()  // Rest Api가 Post에 해당하는 것만 허용
                 .antMatchers("/api/v1/**").authenticated()  // 문 만들기(인증이 있어야 접근이 가능한 곳)
                 // .antMatchers("/api/**").hasRole(UserRole.USER.name()) // ROLE 역할 체크
@@ -47,6 +47,9 @@ public class AuthenticationConfig {
                 // UserNamePasswordAuthenticationFilter(로그인 필터)적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
                 // 로그인하기 전에 토큰을 받아 인가를 부여해주기 위한 기능
                 .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                // JwtTokenFilter 실행전에 JwtTokenExceptionFilter(토큰 에러 필터)를 먼저 실행하라
+                // 토큰 에러필터에서 만약 에러가 걸리면 json형식으로 출력하고 토큰 에러필터에서 걸리지 않는다면 JwtTokenFilter로 넘어가서 인가를 할 수 있도록 기능을 실행한다.
+                .addFilterBefore(new JwtTokenExceptionFilter(),JwtTokenFilter.class)
                 .build();
     }
 }

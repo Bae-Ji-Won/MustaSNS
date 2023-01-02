@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 // 게시물 출력 DTO
 @Getter
@@ -18,8 +19,8 @@ public class PostOneResponse {
     private String title;
     private String body;
     private String userName;
-    private Timestamp createdAt;
-    private Timestamp lastModifiedAt;
+    private String createdAt;
+    private String lastModifiedAt;
 
     public PostOneResponse fromEntity(Post post, String userName){
         return PostOneResponse.builder()
@@ -27,8 +28,8 @@ public class PostOneResponse {
                 .title(post.getTitle())
                 .body(post.getBody())
                 .userName(userName)
-                .createdAt(post.getRegisteredAt())
-                .lastModifiedAt(post.getUpdatedAt())
+                .createdAt(post.getCreatedAt())
+                .lastModifiedAt(post.getLastModifiedAt())
                 .build();
     }
 }

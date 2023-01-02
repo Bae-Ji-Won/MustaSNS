@@ -1,5 +1,6 @@
 package com.likelionfinalproject1.Domain.dto;
 
+import com.likelionfinalproject1.Exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,4 +11,10 @@ import lombok.Getter;
 public class ErrorResponse {
     private String errorCode;
     private String message;
+
+    public ErrorResponse(ErrorCode errorCode) {
+        this.errorCode = errorCode.name();
+        this.message = errorCode.getMessage();
+    }
+
 }
