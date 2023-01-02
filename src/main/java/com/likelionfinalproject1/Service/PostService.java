@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -24,7 +24,18 @@ public class PostService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    // 포스트 새로 작성
+
+    // 권한 비교하는 코드 중복되어 따로 구분
+    public void rolecheck(User user,String userName,Post post){
+        if(user.getRole() != UserRole.ADMIN) {      // 현재 토큰의 유저의 권한이 ADMIN이 아닐때
+            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
+                throw new AppException(ErrorCode.INVALID_PERMISSION);
+            }
+        }
+    }
+
+
+    // 1. 포스트 새로 작성
     public PostCreateResponse postcreate(PostCreateRequest postCreateRequest, String userName){
         User user = userService.getUserByUserName(userName);    // 토큰에서 추출한 userName을 통해 User DB에서 해당 데이터 가져옴
 
@@ -37,7 +48,7 @@ public class PostService {
         }
     }
 
-    // 포스트 한개만 호출하기
+    // 2. 포스트 한개만 호출하기
     public PostOneResponse getpostbyid(Long id){
         Post post = postRepository.findById(id)         // 현재 post 번호를 통해 데이터를 가져온다
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
@@ -46,14 +57,15 @@ public class PostService {
 
     }
 
-    // 포스트 리스트 모두 호출
+    // 3. 포스트 리스트 모두 호출
     public Page<PostListResponse> findAllByPage(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);        // 모든 데이터 호출
         Page<PostListResponse> postListResponses = new PostListResponse().toDtoList(posts);     // Page<Entity> -> Page<Dto>변경
         return postListResponses;
     }
 
-    // 포스트 게시물 수정
+    // 4. 포스트 게시물 수정
+    @Transactional
     public PostChangeResponse postupdate(Long id, PostCreateRequest request, String userName) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));     // DB에 해당 id의 데이터가 없을경우 에외처리
@@ -61,17 +73,10 @@ public class PostService {
         User user = userRepository.findByUserName(userName)                 // 포스트는 있으나 유저가 없을경우
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        if(user.getRole() != UserRole.ADMIN) {      // 현재 토큰의 유저의 권한이 ADMIN이 아닐때
-            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
-                throw new AppException(ErrorCode.INVALID_PERMISSION);
-            }
-        }
+        rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
 
-        if(!request.getTitle().equals(post.getTitle())){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
-            post.setTitle(request.getTitle());
-        }
-        if(!request.getBody().equals(post.getBody())){
-            post.setBody(request.getBody());
+        if((!request.getTitle().equals(post.getTitle()))||(!request.getBody().equals(post.getBody()))){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
+            post.update(request.getTitle(),request.getBody());
         }
 
         postRepository.save(post);
@@ -81,7 +86,7 @@ public class PostService {
     }
 
 
-    // 게시물 삭제
+    // 5. 게시물 삭제
     public PostChangeResponse postdelete(Long id, String userName) {
         User user = userRepository.findByUserName(userName)     // 토큰의 유저에 대한 유저 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
@@ -89,11 +94,7 @@ public class PostService {
         Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
-        if(user.getRole() != UserRole.ADMIN) {          // 토큰의 유저에 대한 권한을 비교함(관리자가 아닐때)
-            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
-                throw new AppException(ErrorCode.INVALID_PERMISSION);
-            }
-        }
+        rolecheck(user,userName,post);
 
         postRepository.delete(post);
 
