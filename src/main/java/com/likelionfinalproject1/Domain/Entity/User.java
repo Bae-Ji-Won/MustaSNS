@@ -25,4 +25,8 @@ public class User extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)    // Enum 클래스인 UserRole의 값을 받아와 저장함
     private UserRole role;        // 권한
+
+    public void roleUpdate(UserRole role){
+        this.role = role;
+    }
 }
