@@ -17,8 +17,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: localhost
     username: root
-    password: 1q2w3e4r
+    password: 1q2w3e4r    # 가짜 비밀번호(진짜는 환경변수에 숨겨둠)
 
 jwt:
   token:
-    secret: hello
+    secret: hello   # 가짜 비밀번호(진짜는 환경변수에 숨겨둠)

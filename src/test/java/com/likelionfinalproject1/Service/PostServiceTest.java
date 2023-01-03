@@ -28,10 +28,10 @@ class PostServiceTest {
     PostRepository postRepository = mock(PostRepository.class);
     UserRepository userRepository = mock(UserRepository.class);
 
-    @BeforeEach
-    void setUp(){
-        postService = new PostService(postRepository, userService, userRepository);
-    }
+//    @BeforeEach
+//    void setUp(){
+//        postService = new PostService(postRepository, userService, userRepository);
+//    }
 
 
 

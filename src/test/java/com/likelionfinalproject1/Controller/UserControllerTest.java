@@ -1,11 +1,9 @@
 package com.likelionfinalproject1.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelionfinalproject1.Domain.Entity.User;
-import com.likelionfinalproject1.Domain.dto.User.UserJoinDao;
+import com.likelionfinalproject1.Domain.dto.User.UserJoinDto;
 import com.likelionfinalproject1.Domain.dto.User.UserJoinRequest;
-import com.likelionfinalproject1.Domain.dto.User.UserJoinResponse;
 import com.likelionfinalproject1.Domain.dto.User.UserLoginRequest;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
@@ -16,11 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(UserRestController.class)
 class UserControllerTest {
 
     @Autowired
@@ -68,7 +64,7 @@ class UserControllerTest {
 
         // given
         User user = userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword()));    // 비밀번호 암호화하여 User Entity 생성
-        UserJoinDao dao = UserJoinDao.fromEntity(user);         // Entity -> Dao
+        UserJoinDto dao = UserJoinDto.fromEntity(user);         // Entity -> Dao
 
         when(userService.join(any())).thenReturn(dao);
 

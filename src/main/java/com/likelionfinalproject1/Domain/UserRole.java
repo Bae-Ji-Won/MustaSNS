@@ -1,5 +1,6 @@
 package com.likelionfinalproject1.Domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,5 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum UserRole {
-    ADMIN,USER
+    ADMIN,USER;
+
+    /*
+    @JsonCreator
+    public static UserRole from(String s) {
+        return UserRole.valueOf(s.toUpperCase());
+    }
+
+     */
 }
