@@ -2,10 +2,9 @@ package com.likelionfinalproject1.Service;
 
 import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Domain.UserRole;
-import com.likelionfinalproject1.Domain.dto.User.UserJoinDao;
+import com.likelionfinalproject1.Domain.dto.User.UserJoinDto;
 import com.likelionfinalproject1.Domain.dto.User.UserJoinRequest;
 import com.likelionfinalproject1.Domain.dto.User.UserLoginRequest;
-import com.likelionfinalproject1.Domain.dto.User.UserRoleRequest;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Repository.UserRepository;
@@ -32,7 +31,7 @@ public class UserService {
     private long expireTimeMs = 1000*60*60; // 토큰 1시간
 
     // 회원가입 기능
-    public UserJoinDao join(UserJoinRequest userJoinRequest){
+    public UserJoinDto join(UserJoinRequest userJoinRequest){
         userRepository.findByUserName(userJoinRequest.getUserName())
                 .ifPresent(userEntity -> {
                     throw new AppException(ErrorCode.DUPLICATED_USER_NAME,String.format(userJoinRequest.getUserName())+"는 이미 있습니다.");
@@ -40,7 +39,7 @@ public class UserService {
 
         User userEntity = userRepository.save(userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword())));
 
-        return UserJoinDao.fromEntity(userEntity);
+        return UserJoinDto.fromEntity(userEntity);
     }
 
     // 로그인 기능
