@@ -36,7 +36,7 @@ public class AuthenticationConfig {
                 .cors()   //  다른 도메인의 리소스에 대해 접근이 허용되는지 체크
                 .and()  // 묶음 구분(httpBasic(),crsf,cors가 한묶음)
                 .authorizeRequests()    // 각 경로 path별 권한 처리
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello/*","/api/v1/posts/{postsId}").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/api/v1/hello/*","/api/v1/posts/{postsId}","/api/v1/posts/{postId}/comments").permitAll()   // 안에 작성된 경로의 api 요청은 인증 없이 모두 허용한다.
                 .antMatchers(HttpMethod.GET, "/api/v1/posts","/api/v1/users/**").permitAll()  // Rest Api가 Post에 해당하는 것만 허용
                 .antMatchers("/api/v1/**").authenticated()  // 문 만들기(인증이 있어야 접근이 가능한 곳)
                 // .antMatchers("/api/**").hasRole(UserRole.USER.name()) // ROLE 역할 체크
