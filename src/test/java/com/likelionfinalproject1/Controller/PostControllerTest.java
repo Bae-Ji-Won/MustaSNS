@@ -1,7 +1,6 @@
 package com.likelionfinalproject1.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.dto.Post.PostChangeResponse;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateRequest;
 import com.likelionfinalproject1.Domain.dto.Post.PostCreateResponse;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(PostController.class)
+@WebMvcTest(PostRestController.class)
 class PostControllerTest {
 
     @Autowired
@@ -102,7 +100,6 @@ class PostControllerTest {
                 .title("test-title")
                 .body("test-body")
                 .userName("han")
-                .createdAt(Timestamp.from(Instant.now()))
                 .build();
 
         given(postService.getpostbyid(any()))
