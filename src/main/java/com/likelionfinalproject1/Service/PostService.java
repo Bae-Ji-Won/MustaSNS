@@ -6,6 +6,7 @@ import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
+import com.likelionfinalproject1.Repository.CommentRepository;
 import com.likelionfinalproject1.Repository.PostRepository;
 import com.likelionfinalproject1.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-
+    private final CommentRepository commentRepository;
 
     // 권한 비교하는 코드 중복되어 따로 구분
     public void rolecheck(User user,String userName,Post post){
@@ -33,6 +34,7 @@ public class PostService {
             }
         }
     }
+
 
 
     // 1. 포스트 새로 작성
@@ -65,21 +67,21 @@ public class PostService {
     }
 
     // 4. 포스트 게시물 수정
-    @Transactional
+    @Transactional      // jpa의 영속성을 활용할때는 Transactional을 통해 자동으로 DB에 추가가 될 수 있도록 해야한다.
     public PostChangeResponse postupdate(Long id, PostCreateRequest request, String userName) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));     // DB에 해당 id의 데이터가 없을경우 에외처리
-
-        User user = userRepository.findByUserName(userName)                 // 포스트는 있으나 유저가 없을경우
+        User user = userRepository.findByUserName(userName)     // 토큰의 유저에 대한 유저 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+        Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
         rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
 
         if((!request.getTitle().equals(post.getTitle()))||(!request.getBody().equals(post.getBody()))){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
-            post.update(request.getTitle(),request.getBody());
+            post.update(request.getTitle(),request.getBody());      // Jpa 영속성을 활용한 update 기능 활용
         }
 
-        postRepository.save(post);
+        // postRepository.save(post);
 
         String str = "포스트 수정 완료";
         return PostChangeResponse.success(str,post.getId());    // 정상동작시 "등록 완료" 출력
@@ -102,4 +104,6 @@ public class PostService {
 
         return PostChangeResponse.success(str,post.getId());
     }
+
+
 }
