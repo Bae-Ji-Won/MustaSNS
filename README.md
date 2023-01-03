@@ -23,9 +23,9 @@
 
 ### 도전 과제
 ❌ 화면 UI 개발 - 회원가입, 로그인, 글쓰기, 조회<br>
-❌ADMIN 회원으로 등급업하는 기능<br>
-❌초기 ADMIN 회원은 하나가 존재하고 ADMIN 회원은 일반회원의 권한을 ADMIN으로 승격시킬 수 있다.<br>
-❌ADMIN 회원이 일반 회원을 ADMIN으로 승격시키는 기능
+☑ADMIN 회원으로 등급업하는 기능<br>
+☑초기 ADMIN 회원은 하나가 존재하고 ADMIN 회원은 일반회원의 권한을 ADMIN으로 승격시킬 수 있다.<br>
+☑ADMIN 회원이 일반 회원을 ADMIN으로 승격시키는 기능
     - POST /users/{id}/role/change
         - Body {”role”:”admin” | “user”} admin 또는 user로 변경할 수 있습니다.<br>
 ☑ ADMIN 회원이 로그인 시 자신이 쓴 글이 아닌 글과 댓글에 수정, 삭제를 할 수 있는 기능
