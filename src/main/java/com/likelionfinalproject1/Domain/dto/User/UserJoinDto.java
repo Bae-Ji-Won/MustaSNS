@@ -9,14 +9,14 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class UserJoinDao {
+public class UserJoinDto {
     private Long id;
     private String username;
     private String password;
     private UserRole role;
 
-    public static UserJoinDao fromEntity(User userEntity){
-        UserJoinDao userDao = UserJoinDao.builder()
+    public static UserJoinDto fromEntity(User userEntity){
+        UserJoinDto userDao = UserJoinDto.builder()
                 .id(userEntity.getId())
                 .username(userEntity.getUserName())
                 .password(userEntity.getPassword())
