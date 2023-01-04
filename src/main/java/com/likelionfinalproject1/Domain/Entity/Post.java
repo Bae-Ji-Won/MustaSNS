@@ -47,6 +47,9 @@ public class Post extends BaseTimeEntity{
     private List<Comment> comments = new LinkedList<>();            // Comment의 값이 순서대로 저장될 수 있게 하기 위해 LinkedList 사용
 
 
+    @OneToMany(mappedBy = "post")
+    private List<Like> likes = new LinkedList<>();
+
     public void update(String title,String body){       // jpa 영속성 활용
         this.title = title;
         this.body = body;
