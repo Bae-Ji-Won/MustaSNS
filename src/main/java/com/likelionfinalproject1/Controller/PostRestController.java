@@ -97,4 +97,22 @@ public class PostRestController {
         CommentDeleteResponse response = commentService.commentDelete(postid,id,userName);
         return Response.success(response);
     }
+
+
+    // ---------------------- 좋아요 ---------------------
+
+    // 좋아요 누르기
+    @PostMapping("/{postId}/likes")
+    public Response<String> postLike(@PathVariable(name = "postId")Long id, Authentication auth){
+        String userName = auth.getName();
+        String str = postService.postlike(id,userName);
+        return Response.success(str);
+    }
+
+
+    // 해당 게시물의 좋아요 총 개수 구하기
+    @GetMapping("/{postsId}/likes")
+    public Response<Integer> postLikeCount(@PathVariable(name = "postsId")Long id){
+        return Response.success(postService.postlikecount(id));
+    }
 }
