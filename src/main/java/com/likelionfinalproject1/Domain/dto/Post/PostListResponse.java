@@ -30,7 +30,7 @@ public class PostListResponse {
                 .id(m.getId())          // m(Post)에서 데이터 가져와 PostListResponse에 데이터 삽입
                 .title(m.getTitle())
                 .body(m.getBody())
-                .userName(m.getUserId().getUserName())
+                .userName(m.getUser().getUserName())
                 .createdAt(m.getCreatedAt())
                 .lastModifiedAt(m.getLastModifiedAt())
                 .build());

@@ -17,7 +17,7 @@ public class PostCreateRequest {
         return Post.builder()
                 .title(this.title)
                 .body(this.body)
-                .userId(user)
+                .user(user)
                 .build();
     }
 }
