@@ -3,7 +3,7 @@
 ## 1. Swagger
 (1) Local Url : http://localhost:8080/swagger-ui/
 <br>
-(2) Ec2 Url : http://ec2-44-199-204-56.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
+(2) Ec2 Url : http://ec2-18-209-240-235.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
 
 
 ## 2. 아키텍처
@@ -20,6 +20,8 @@
 ☑ Gitlab CI & Crontab CD<br>
 ☑ 로그인<br>
 ☑ 포스트 작성, 수정, 삭제, 리스트<br>
+☑ 댓글 작성, 수정, 삭제, 리스트<br>
+☑ 좋아요 누르기, 취소하기, 해당 게시물의 총 개수 구하기<br>
 
 ### 도전 과제
 ❌ 화면 UI 개발 - 회원가입, 로그인, 글쓰기, 조회<br>
@@ -85,7 +87,25 @@ https://gitlab.com/qowl880/finalproject-baejiwon/-/issues<br> [일차별 세부 
    - PostController TestCase 작성
    - PostService TestCase 작성(미완성)
 
+> #### 7일차
+(1) Comment 기능 구현
+   - 댓글 목록 조회
+      - 댓글 조회는 모든 회원이 권한을 가진다.
+      - 제목, 글쓴이, 작성날짜가 표시된다.
+      - 목록 기능은 페이징 기능이 포함된다.
+         - 한 페이지당 default 피드 갯수는 10개이다.
+         - 총 페이지 갯수가 표시된다.
+         - 작성날짜 기준으로 최신순으로 sort한다.
+   - 댓글 작성
+      - 댓글 작성은 로그인 한 사람만 쓸 수 있습니다.
+   - 댓글 수정 / 삭제
+      - 댓글 수정은 댓글을 작성한 회원만이 권한을 가집니다.
 
+> #### 8일차
+(1) 좋아요 기능 구현
+   - 좋아요 누르기
+   - ‘좋아요’는 한번만 누를 수 있습니다. 중복으로 누르는 경우는 좋아요 해제됨
+   - 해당 게시물에 대한 좋아요 개수 구하기
 
 ## 6. EndPoint 
 

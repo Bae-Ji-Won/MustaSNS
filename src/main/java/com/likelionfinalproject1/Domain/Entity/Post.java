@@ -39,7 +39,7 @@ public class Post extends BaseTimeEntity{
 
     @ManyToOne          // many = 게시물 , one = 유저    한명의 유저가 여러개의 포스트 작성 가능
     @JoinColumn(name="user_id")
-    private User userId;
+    private User user;
 
     // Comment와 Post 양방향 매핑
     // @JsonIgnore   -> 존재는 하지만 실제적으로 사용은 하지 않을때 사용(양방향 매핑 구조라는 것을 알려주지만 실제적으로 역방향으로 값을 사용하지 않을때 사용)

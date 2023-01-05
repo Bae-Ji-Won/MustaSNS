@@ -4,6 +4,7 @@ import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Domain.UserRole;
+import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,17 +33,20 @@ public class PostService {
 
     private final LikeRepository likeRepository;
 
+
+    // --------------------- 예외 처리 ---------------------------
+    
     // 권한 비교하는 코드 중복되어 따로 구분
     public void rolecheck(User user,String userName,Post post){
         if(user.getRole() != UserRole.ADMIN) {      // 현재 토큰의 유저의 권한이 ADMIN이 아닐때
-            if (!userName.equals(post.getUserId().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
+            if (!userName.equals(post.getUser().getUserName())) {     // 현재 토큰에 있는 아이디와 게시물의 아이디가 다를경우 예외처리
                 throw new AppException(ErrorCode.INVALID_PERMISSION);
             }
         }
     }
 
     // 좋아요가 이미 있는지 없는지 체크
-    public Integer likedelete(User user,Post post){
+    public Integer likecheck(User user,Post post){
         // 양방향 매핑이 되어있는 Post, Like Entity에서 역방향으로 데이터를 구해서 비교하기
         int result = -1;
         // PostEntity에 객체형식으로 저장된 List<Like>가 얼마나 있는지 모르므로 사이즈만큼 값에서 0까지 반복해서 데이터를 찾는다
@@ -54,6 +59,8 @@ public class PostService {
         log.info("result :"+result);
         return result;
     }
+    
+    // --------------------- 게시물 기능 구현 ---------------------------
 
     // 1. 포스트 새로 작성
     public PostCreateResponse postcreate(PostCreateRequest postCreateRequest, String userName){
@@ -73,7 +80,7 @@ public class PostService {
         Post post = postRepository.findById(id)         // 현재 post 번호를 통해 데이터를 가져온다
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        return new PostOneResponse().fromEntity(post,post.getUserId().getUserName());
+        return new PostOneResponse().fromEntity(post,post.getUser().getUserName());
 
     }
 
@@ -116,14 +123,20 @@ public class PostService {
 
         rolecheck(user,userName,post);
 
+        likeRepository.deleteAllByPost(post);
+
         postRepository.delete(post);
 
         String str = "포스트 삭제 완료";
 
+
+
         return PostChangeResponse.success(str,post.getId());
     }
 
+    // --------------------- 좋아요 기능 구현 ---------------------------
 
+    // 1. 게시물 좋아요 누르기
     public String postlike(Long id, String userName) {
         User user = userRepository.findByUserName(userName)     // 토큰의 유저에 대한 유저 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
@@ -131,7 +144,7 @@ public class PostService {
         Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
-        int result = likedelete(user,post);     // 해당 게시물에 좋아요가 이미 있는지 없는지 체크함
+        int result = likecheck(user,post);     // 해당 게시물에 좋아요가 이미 있는지 없는지 체크함
 
         // result에 default값인 -1을 제외한 값이 들어있다면 이미 해당 게시물에 해당유저가 좋아요를 누른 상태이므로 해당 좋아요 데이터를 삭제(좋아요 취소)를 한다.
         if(result != -1){
@@ -151,11 +164,25 @@ public class PostService {
 
     }
 
-    // 해당 포스터 좋아요 총 개수 구하기
+    // 2. 해당 포스터 좋아요 총 개수 구하기
     public Integer postlikecount(Long id) {
         Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
         return post.getLikes().size();
+    }
+
+    // --------------------- MyPage 구현 ---------------------------
+
+    // 1. 해당 유저가 작성한 게시물 모두 출력
+    public Page<MypagelistResponse> mypage(String userName,Pageable pageable) {
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));     // 해당 유저 존재여부 확인
+
+        Page<Post> posts = postRepository.findAllByUserUserName(userName,pageable);   // 유저 이름을 통한 해당 post 찾기
+
+        Page<MypagelistResponse> mypagelistResponses = new MypagelistResponse().toDtoList(posts);   // Entity -> MypagelistResponse
+
+        return mypagelistResponses;
     }
 }

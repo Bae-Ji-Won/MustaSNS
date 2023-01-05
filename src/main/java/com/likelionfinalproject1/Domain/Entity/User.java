@@ -1,10 +1,13 @@
 package com.likelionfinalproject1.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.likelionfinalproject1.Domain.UserRole;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +28,11 @@ public class User extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)    // Enum 클래스인 UserRole의 값을 받아와 저장함
     private UserRole role;        // 권한
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new LinkedList<>();
+
 
     public void roleUpdate(UserRole role){
         this.role = role;
