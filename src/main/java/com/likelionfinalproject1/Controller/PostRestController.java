@@ -2,6 +2,7 @@ package com.likelionfinalproject1.Controller;
 
 import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.Comment.*;
+import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Service.CommentService;
 import com.likelionfinalproject1.Service.PostService;
@@ -114,5 +115,14 @@ public class PostRestController {
     @GetMapping("/{postsId}/likes")
     public Response<Integer> postLikeCount(@PathVariable(name = "postsId")Long id){
         return Response.success(postService.postlikecount(id));
+    }
+
+
+    // ---------------------- 마이 피드 ---------------------
+    @GetMapping("/my")
+    public Response<Page<MypagelistResponse>> myPage(Authentication auth,Pageable pageable){
+        String userName = auth.getName();
+        Page<MypagelistResponse> responses = postService.mypage(userName,pageable);
+        return Response.success(responses);
     }
 }
