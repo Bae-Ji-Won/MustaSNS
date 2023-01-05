@@ -1,5 +1,6 @@
 package com.likelionfinalproject1.Service;
 
+import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Domain.UserRole;
@@ -7,6 +8,7 @@ import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Repository.CommentRepository;
+import com.likelionfinalproject1.Repository.LikeRepository;
 import com.likelionfinalproject1.Repository.PostRepository;
 import com.likelionfinalproject1.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +28,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+
+    private final LikeRepository likeRepository;
 
     // 권한 비교하는 코드 중복되어 따로 구분
     public void rolecheck(User user,String userName,Post post){
@@ -35,7 +40,20 @@ public class PostService {
         }
     }
 
-
+    // 좋아요가 이미 있는지 없는지 체크
+    public Integer likedelete(User user,Post post){
+        // 양방향 매핑이 되어있는 Post, Like Entity에서 역방향으로 데이터를 구해서 비교하기
+        int result = -1;
+        // PostEntity에 객체형식으로 저장된 List<Like>가 얼마나 있는지 모르므로 사이즈만큼 값에서 0까지 반복해서 데이터를 찾는다
+        for(int i=post.getLikes().size()-1; i>=0; i--){
+            // PostEntity에 저장된 List<Like>중 현재 유저에게 입력받은 postId와 userId의 값을 가진 객체의 index값을 구함
+            if((post.getLikes().get(i).getPost().getId() == post.getId())&&(post.getLikes().get(i).getUser().getId() == user.getId())){
+                result = i;
+            }
+        }
+        log.info("result :"+result);
+        return result;
+    }
 
     // 1. 포스트 새로 작성
     public PostCreateResponse postcreate(PostCreateRequest postCreateRequest, String userName){
@@ -106,4 +124,38 @@ public class PostService {
     }
 
 
+    public String postlike(Long id, String userName) {
+        User user = userRepository.findByUserName(userName)     // 토큰의 유저에 대한 유저 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+        Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+
+        int result = likedelete(user,post);     // 해당 게시물에 좋아요가 이미 있는지 없는지 체크함
+
+        // result에 default값인 -1을 제외한 값이 들어있다면 이미 해당 게시물에 해당유저가 좋아요를 누른 상태이므로 해당 좋아요 데이터를 삭제(좋아요 취소)를 한다.
+        if(result != -1){
+            likeRepository.delete(post.getLikes().get(result));
+            return "좋아요를 취소했습니다.";
+        }
+
+
+        // 위에서 result의 값이 -1 그대로일경우 해당 게시물에 대한 해당 유저의 좋아요가 없으므로 좋아요 데이터를 생성한다.
+        Like like = likeRepository.findByPostIdAndUserId(post.getId(),user.getId())     // postid와 userid로 like 데이터를 찾음
+                .orElse(likeRepository.save(Like.builder()
+                                .post(post)
+                                .user(user)
+                                .build()));
+
+        return "좋아요를 눌렀습니다.";
+
+    }
+
+    // 해당 포스터 좋아요 총 개수 구하기
+    public Integer postlikecount(Long id) {
+        Post post = postRepository.findById(id)             // 게시물 번호에 대한 게시물 데이터를 가져옴
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+
+        return post.getLikes().size();
+    }
 }
