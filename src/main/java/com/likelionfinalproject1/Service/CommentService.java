@@ -1,5 +1,6 @@
 package com.likelionfinalproject1.Service;
 
+import com.likelionfinalproject1.Domain.Entity.Alarm;
 import com.likelionfinalproject1.Domain.Entity.Comment;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
@@ -7,6 +8,7 @@ import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Domain.dto.Comment.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
+import com.likelionfinalproject1.Repository.AlarmRepository;
 import com.likelionfinalproject1.Repository.CommentRepository;
 import com.likelionfinalproject1.Repository.PostRepository;
 import com.likelionfinalproject1.Repository.UserRepository;
@@ -27,7 +29,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-
+    private final AlarmRepository alarmRepository;
 
     // 토큰의 유저에 대한 유저 데이터를 가져오고 DB에 User 데이터가 있는지 확인
     public User userCheck(String userName){
@@ -72,7 +74,26 @@ public class CommentService {
         }
     }
 
+    // 알림 설정
+    public Alarm alarmcheck(User user,Post post){
+        // 페이지 주인한테 알림 보내기 위한 설정
+        String postUserName = post.getUser().getUserName();     // 현재 포스터의 주인 이름을 찾음
+        User postuser = userRepository.findByUserName(postUserName)     // 주인 이름을 통해 해당 데이터를 찾음
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        Alarm alarm = new Alarm().toEntity("comment",postuser,user.getId(),post.getId());
 
+        return alarm;
+    }
+
+    // 알림 삭제
+    public void alarmdelete(Alarm alarm){
+        Alarm deletealarm = alarmRepository.findByTargetIdAndUserIdAndText(alarm.getTargetId(),alarm.getUser().getId(),"new comment!")
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+
+        alarmRepository.delete(deletealarm);      // 알림 삭제
+    }
+
+    // ---------------------------- 기능 구현 ------------------------
 
     // 1. 댓글 생성
     public CommentDto commentCreate(Long id, CommentRequest request, String userName) {
@@ -86,6 +107,12 @@ public class CommentService {
 
         log.info(comment.getCreatedAt());
         log.info(comment.getLastModifiedAt());
+
+
+        // 페이지 주인한테 알림 보내기
+        Alarm alarm = alarmcheck(user,post);
+        alarmRepository.save(alarm);
+
         return new CommentDto().fromentity(comment);
     }
 
@@ -129,6 +156,10 @@ public class CommentService {
         rolecheck(user,post,comment);
 
         commentRepository.delete(comment);
+
+        // 페이지에 대한 알림 삭제
+        Alarm alarm = alarmcheck(user,post);
+        alarmdelete(alarm);
 
         String message ="댓글 삭제 완료";
         return new CommentDeleteResponse(message,comment.getId());
