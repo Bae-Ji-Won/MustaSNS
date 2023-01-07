@@ -11,7 +11,7 @@
 
 ## 3. ERD
 <img src="/uploads/67f53a918ebedbbeae4fc4069db185e5/image.png" width="400"></img>
-
+ㅇ
 ## 4. 체크리스트
 ### 필수 과제
 ☑ 회원가입<br>
