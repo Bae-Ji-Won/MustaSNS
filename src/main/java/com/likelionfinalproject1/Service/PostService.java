@@ -1,5 +1,7 @@
 package com.likelionfinalproject1.Service;
 
+import com.likelionfinalproject1.Domain.AlarmType;
+import com.likelionfinalproject1.Domain.Entity.Alarm;
 import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
@@ -8,10 +10,7 @@ import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
-import com.likelionfinalproject1.Repository.CommentRepository;
-import com.likelionfinalproject1.Repository.LikeRepository;
-import com.likelionfinalproject1.Repository.PostRepository;
-import com.likelionfinalproject1.Repository.UserRepository;
+import com.likelionfinalproject1.Repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Optional;
 
 
@@ -33,7 +36,9 @@ public class PostService {
 
     private final LikeRepository likeRepository;
 
+    private final AlarmRepository alarmRepository;
 
+    private final CommentRepository commentRepository;
     // --------------------- 예외 처리 ---------------------------
     
     // 권한 비교하는 코드 중복되어 따로 구분
@@ -59,6 +64,25 @@ public class PostService {
         log.info("result :"+result);
         return result;
     }
+
+    // 알림 저장 체크
+    public Alarm alarmcheck(User user,Post post){
+        String postUserName = post.getUser().getUserName();     // 현재 포스터의 주인 이름을 찾음
+        User postuser = userRepository.findByUserName(postUserName)     // 주인 이름을 통해 해당 데이터를 찾음
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        Alarm alarm = new Alarm().toEntity("like",postuser,user.getId(),post.getId());
+
+        return alarm;
+    }
+
+    // 알림 삭제
+    public void alarmdelete(Alarm alarm){
+        Alarm deletealarm = alarmRepository.findByTargetIdAndUserIdAndText(alarm.getTargetId(),alarm.getUser().getId(),"new like!")
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+
+        alarmRepository.delete(deletealarm);      // 알림 삭제
+    }
+
     
     // --------------------- 게시물 기능 구현 ---------------------------
 
@@ -123,9 +147,15 @@ public class PostService {
 
         rolecheck(user,userName,post);
 
-        likeRepository.deleteAllByPost(post);
+        likeRepository.deleteAllByPost(post);   // 연결된 모든 like 데이터 삭제
 
-        postRepository.delete(post);
+        commentRepository.deleteAllByPost(post);    // 연결된 모든 댓글 데이터 삭제
+
+        alarmRepository.deleteAllByPost(post);         // 연결된 모든 alarm 데이터 삭제
+
+        postRepository.delete(post);            // 게시물 데이터 삭제
+        
+        
 
         String str = "포스트 삭제 완료";
 
@@ -146,11 +176,23 @@ public class PostService {
 
         int result = likecheck(user,post);     // 해당 게시물에 좋아요가 이미 있는지 없는지 체크함
 
+
+        // 페이지 주인한테 알림 보내기 위한 설정
+        Alarm alarm = alarmcheck(user,post);
+
+
         // result에 default값인 -1을 제외한 값이 들어있다면 이미 해당 게시물에 해당유저가 좋아요를 누른 상태이므로 해당 좋아요 데이터를 삭제(좋아요 취소)를 한다.
         if(result != -1){
+
+            alarmdelete(alarm);         // 알림 삭제
+
             likeRepository.delete(post.getLikes().get(result));
+
             return "좋아요를 취소했습니다.";
         }
+
+        // 페이지 주인한테 알림 보내기 위한 알림 데이터 저장
+        alarmRepository.save(alarm);      // 포스터 주인앞으로 알림 데이터 저장함
 
 
         // 위에서 result의 값이 -1 그대로일경우 해당 게시물에 대한 해당 유저의 좋아요가 없으므로 좋아요 데이터를 생성한다.
