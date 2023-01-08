@@ -8,6 +8,7 @@ import com.likelionfinalproject1.Domain.dto.User.UserLoginRequest;
 import com.likelionfinalproject1.Exception.AppException;
 import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Repository.UserRepository;
+import com.likelionfinalproject1.Service.Exception.UserException;
 import com.likelionfinalproject1.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder encoder;
+
+    private final UserException userException;
 
     @Value("${jwt.token.secret}")
     private String secretkey;   // application.yml에서 설정한 token 키의 값을 저장함
