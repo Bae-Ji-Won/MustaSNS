@@ -5,6 +5,7 @@ import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.User.*;
 import com.likelionfinalproject1.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserRestController {
 
     private final UserService userService;
@@ -27,6 +29,8 @@ public class UserRestController {
     // 로그인
     @PostMapping("/login")
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest){
+        log.info("id :"+userLoginRequest.getUserName());
+        log.info("password :"+userLoginRequest.getPassword());
         String token = userService.login(userLoginRequest);
         return Response.success(new UserLoginResponse(token));
     }
