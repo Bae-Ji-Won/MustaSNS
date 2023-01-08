@@ -34,6 +34,7 @@ public class LikeException {
                 result = i;
             }
         }
+
         log.info("result :"+result);
         return result;
     }
