@@ -60,15 +60,16 @@ class UserControllerTest {
     @DisplayName("회원가입 성공")
     @WithMockUser
     void createUser_success() throws Exception {
+        // given
         setup();
 
-        // given
+        // when
         User user = userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword()));    // 비밀번호 암호화하여 User Entity 생성
         UserJoinDto dao = UserJoinDto.fromEntity(user);         // Entity -> Dao
 
         when(userService.join(any())).thenReturn(dao);
 
-        // when,then
+        // then
         mockMvc.perform(post("/api/v1/users/join")
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -85,16 +86,18 @@ class UserControllerTest {
     @DisplayName("회원가입 실패 : username 중복")
     @WithMockUser
     void createUser_fail() throws Exception {
+        // given
         setup();
 
-        // given
+
         // 이전에는 when/thenReturn을 통해 구현했는데 그렇게 하면 given 구역에서 when을 사용하면 헷갈릴 수 있으므로 given으로 구역을 표시하며 정확히 한다.
+        // when
         User user = userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword()));    // 비밀번호 암호화하여 User Entity 생성
 
         given(userService.join(any()))
                 .willThrow(new AppException(ErrorCode.DUPLICATED_USER_NAME));
 
-        // when,then
+        // then
         mockMvc.perform(post("/api/v1/users/join")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -148,12 +151,14 @@ class UserControllerTest {
     @DisplayName("로그인 성공")
     @WithMockUser
     void login_success () throws Exception {
+        // given
         setup();
 
-        // given
+        // when
         given(userService.login(any()))
                 .willReturn("token");
 
+        // then
         mockMvc.perform(post("/api/v1/users/login")
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +168,4 @@ class UserControllerTest {
 
         verify(userService).login(any());
     }
-
-
-
 }

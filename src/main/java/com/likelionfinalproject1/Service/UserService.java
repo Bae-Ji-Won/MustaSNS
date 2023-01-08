@@ -66,12 +66,12 @@ public class UserService {
     }
 
 
-    // UserName을 통해 DB에 데이터가 있는지 확인(유저가 존재하는지 확인)
-    public User getUserByUserName(String userName) {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,String.format("해당 유저가 없습니다.")));
-        return user;
-    }
+//    // UserName을 통해 DB에 데이터가 있는지 확인(유저가 존재하는지 확인)
+//    public User getUserByUserName(String userName) {
+//        User user = userRepository.findByUserName(userName)
+//                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,String.format("해당 유저가 없습니다.")));
+//        return user;
+//    }
 
 
     // 모든 유저 데이터 출력
