@@ -27,7 +27,6 @@ import java.util.Map;
 @Slf4j
 public class PostService {
     private final PostRepository postRepository;
-    private final UserService userService;
 
     private final LikeRepository likeRepository;
 
@@ -62,7 +61,7 @@ public class PostService {
 
     // 1. 포스트 새로 작성
     public PostCreateResponse postcreate(PostCreateRequest postCreateRequest, String userName){
-        User user = userService.getUserByUserName(userName);    // 토큰에서 추출한 userName을 통해 User DB에서 해당 데이터 가져옴
+        User user = userException.getUserByUserName(userName);    // 토큰에서 추출한 userName을 통해 User DB에서 해당 데이터 가져옴
 
         Post post = postRepository.save(postCreateRequest.toEntity(user));  // Post DB에 유저가 입력한 제목,내용 저장
 
