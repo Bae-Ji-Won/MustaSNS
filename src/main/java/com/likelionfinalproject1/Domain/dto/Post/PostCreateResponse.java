@@ -3,11 +3,13 @@ package com.likelionfinalproject1.Domain.dto.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 // 게시물 생성(데이터 출력) DTO
 @AllArgsConstructor
 @Getter
 @Builder
+@NoArgsConstructor
 public class PostCreateResponse {
     private String message;
     private Long postId;
