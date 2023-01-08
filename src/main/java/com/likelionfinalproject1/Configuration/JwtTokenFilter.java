@@ -1,6 +1,7 @@
 package com.likelionfinalproject1.Configuration;
 
 import com.likelionfinalproject1.Domain.Entity.User;
+import com.likelionfinalproject1.Service.Exception.UserException;
 import com.likelionfinalproject1.Service.UserService;
 import com.likelionfinalproject1.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.List;
 public class JwtTokenFilter extends OncePerRequestFilter {
     // OncePerRequestFilter : 매번 들어갈때마다 토큰을 체크를 하는 클래스
 
-    private final UserService userService;
+    private final UserException userException;
     private final String secretKey;     // 외부에서 받아오는 키와 개발자의 고유키가 일치하는지 확인하기 위해 secretKey가 필요함
                                         // SecurityConfig에서 SecretKey를 받아와 생성자를 통해 저장함
 
@@ -69,7 +70,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         log.info("userName:{}",userName);
 
         // UserDetail 가져오기
-        User user = userService.getUserByUserName(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
+        User user = userException.getUserByUserName(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
         log.info("userRole :{}",user.getRole());
 
 // 문 열어주는 곳(인가 허용)

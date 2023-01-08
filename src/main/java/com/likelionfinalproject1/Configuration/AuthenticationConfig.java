@@ -2,6 +2,7 @@ package com.likelionfinalproject1.Configuration;
 
 
 import com.likelionfinalproject1.Domain.UserRole;
+import com.likelionfinalproject1.Service.Exception.UserException;
 import com.likelionfinalproject1.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // @EnableGlobalMethodSecurity(prePostEnabled = true)  // Controller에서 특정 페이지에 권한이 있는 유저만 접근을 허용할 경우
 public class AuthenticationConfig {
 
-    private final UserService userService;
-
+    private final UserException userException;
     @Value("${jwt.token.secret}")
     private String secretKey;
 
@@ -46,7 +46,7 @@ public class AuthenticationConfig {
                 .and()
                 // UserNamePasswordAuthenticationFilter(로그인 필터)적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
                 // 로그인하기 전에 토큰을 받아 인가를 부여해주기 위한 기능
-                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(userException, secretKey), UsernamePasswordAuthenticationFilter.class)
                 // JwtTokenFilter 실행전에 JwtTokenExceptionFilter(토큰 에러 필터)를 먼저 실행하라
                 // 토큰 에러필터에서 만약 에러가 걸리면 json형식으로 출력하고 토큰 에러필터에서 걸리지 않는다면 JwtTokenFilter로 넘어가서 인가를 할 수 있도록 기능을 실행한다.
                 .addFilterBefore(new JwtTokenExceptionFilter(),JwtTokenFilter.class)
