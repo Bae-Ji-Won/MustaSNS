@@ -17,5 +17,5 @@ public interface AlarmRepository extends JpaRepository<Alarm,Long> {
     @Transactional
     @Modifying
         // Post(Entity)에 해당하는 데이터는 모두 삭제
-    void deleteAllByPost(@Param("post") Post post);     // @Param("post") = post라는 이름으로 Post(Entity)가 넘어온다는 뜻
+    void deleteAllByTargetId(@Param("post") Long id);     // @Param("post") = post라는 이름으로 Post(Entity)가 넘어온다는 뜻
 }
