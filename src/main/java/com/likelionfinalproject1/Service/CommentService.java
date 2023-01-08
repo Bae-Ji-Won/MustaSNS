@@ -12,6 +12,10 @@ import com.likelionfinalproject1.Repository.AlarmRepository;
 import com.likelionfinalproject1.Repository.CommentRepository;
 import com.likelionfinalproject1.Repository.PostRepository;
 import com.likelionfinalproject1.Repository.UserRepository;
+import com.likelionfinalproject1.Service.Exception.AlarmException;
+import com.likelionfinalproject1.Service.Exception.CommentException;
+import com.likelionfinalproject1.Service.Exception.PostException;
+import com.likelionfinalproject1.Service.Exception.UserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,24 +35,15 @@ public class CommentService {
 
     private final AlarmRepository alarmRepository;
 
-    // 토큰의 유저에 대한 유저 데이터를 가져오고 DB에 User 데이터가 있는지 확인
-    public User userCheck(String userName){
-        return userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
-    }
+    private final PostException postException;
 
-    // 게시물 번호에 대한 게시물 데이터를 가져오고 DB에 Post 데이터가 있는지 확인
-    public Post postCheck(Long id){
-        return postRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
-    }
+    private final UserException userException;
 
-    // 댓글 번호에 대한 댓글 데이터를 가져오고 DB에 Comment 데이터가 있는지 확인
-    public Comment commentCheck(Long id){
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
-    }
+    private final CommentException commentException;
 
+    private final AlarmException alarmException;
+
+    // ------------------------- 예외 처리 ----------------------
 
     // 권한 비교하는 코드 중복되어 따로 구분
     public void rolecheck(User user,Post post,Comment comment){
@@ -74,32 +69,13 @@ public class CommentService {
         }
     }
 
-    // 알림 설정
-    public Alarm alarmcheck(User user,Post post){
-        // 페이지 주인한테 알림 보내기 위한 설정
-        String postUserName = post.getUser().getUserName();     // 현재 포스터의 주인 이름을 찾음
-        User postuser = userRepository.findByUserName(postUserName)     // 주인 이름을 통해 해당 데이터를 찾음
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
-        Alarm alarm = new Alarm().toEntity("comment",postuser,user.getId(),post.getId());
-
-        return alarm;
-    }
-
-    // 알림 삭제
-    public void alarmdelete(Alarm alarm){
-        Alarm deletealarm = alarmRepository.findByTargetIdAndUserIdAndText(alarm.getTargetId(),alarm.getUser().getId(),"new comment!")
-                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
-
-        alarmRepository.delete(deletealarm);      // 알림 삭제
-    }
-
     // ---------------------------- 기능 구현 ------------------------
 
     // 1. 댓글 생성
     public CommentDto commentCreate(Long id, CommentRequest request, String userName) {
-        User user = userCheck(userName);
+        User user = userException.userDBCheck(userName);
 
-        Post post = postCheck(id);
+        Post post = postException.postDBCheck(id);
 
         Comment comment = new CommentRequest(request.getComment()).toEntity(user,post);       // Dto -> Entity
 
@@ -110,7 +86,7 @@ public class CommentService {
 
 
         // 페이지 주인한테 알림 보내기
-        Alarm alarm = alarmcheck(user,post);
+        Alarm alarm = alarmException.alarmDBcheck(user,post,"comment");
         alarmRepository.save(alarm);
 
         return new CommentDto().fromentity(comment);
@@ -119,7 +95,7 @@ public class CommentService {
     // 2. 댓글 전체 출력
     public Page<CommentListResponse> findAllById(Long id,Pageable pageable) {
         log.info("postid:"+id);
-        Post post = postCheck(id);
+        Post post = postException.postDBCheck(id);
 
         Page<Comment> comments = commentRepository.findByPostId(id,pageable);
         Page<CommentListResponse> commentListResponses = new CommentListResponse().commenttoDtoList(comments);
@@ -129,11 +105,11 @@ public class CommentService {
     // 3. 댓글 수정
     @Transactional
     public CommentResponse commentUpdate(Long postid, Long id, CommentRequest request, String userName) {
-        User user = userCheck(userName);
+        User user = userException.userDBCheck(userName);
 
-        Post post = postCheck(postid);
+        Post post = postException.postDBCheck(postid);
 
-        Comment comment = commentCheck(id);
+        Comment comment = commentException.commentDBCheck(id);
 
         rolecheck(user,post,comment);
 
@@ -147,19 +123,19 @@ public class CommentService {
 
     // 4. 댓글 삭제
     public CommentDeleteResponse commentDelete(Long postid, Long id, String userName) {
-        User user = userCheck(userName);
+        User user = userException.userDBCheck(userName);
 
-        Post post = postCheck(postid);
+        Post post = postException.postDBCheck(postid);
 
-        Comment comment = commentCheck(id);
+        Comment comment = commentException.commentDBCheck(id);
 
         rolecheck(user,post,comment);
 
         commentRepository.delete(comment);
 
         // 페이지에 대한 알림 삭제
-        Alarm alarm = alarmcheck(user,post);
-        alarmdelete(alarm);
+        Alarm alarm = alarmException.alarmDBcheck(user,post,"comment");
+        alarmException.alarmdelete(alarm,"new comment!");
 
         String message ="댓글 삭제 완료";
         return new CommentDeleteResponse(message,comment.getId());
