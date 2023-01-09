@@ -4,6 +4,7 @@ import com.likelionfinalproject1.Domain.Entity.Alarm;
 import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
+import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
@@ -43,6 +44,8 @@ public class PostService {
 
     // --------------------- 예외 처리 ---------------------------
 
+
+
     // user와 post 존재여부 확인 예외처리를 하는 코드들이 많아서 코드중복되어 따로 분리해서 map으로 반환해줄려고 했는데
     // 어차피 map에서 꺼내서 각각 User와 Post에 넣어줘야 해서 이것또한 중복코드가 되기 때문에 아래 코드 사용 안함
     public Map<String,Object> userpostDBCheck(String userName, Long id){
@@ -61,10 +64,9 @@ public class PostService {
 
     // 1. 포스트 새로 작성
     public PostCreateResponse postCreate(PostCreateRequest postCreateRequest, String userName){
-//        User user = userException.testGetUserByUserName(userName)
-//                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,String.format("해당 유저가 없습니다.")));
 
-        User user = userException.getUserByUserName(userName);    // 토큰에서 추출한 userName을 통해 User DB에서 해당 데이터 가져옴
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND,String.format("해당 유저가 없습니다.")));
 
         Post post = postRepository.save(postCreateRequest.toEntity(user));  // Post DB에 유저가 입력한 제목,내용 저장
 
@@ -93,12 +95,17 @@ public class PostService {
     // 4. 포스트 게시물 수정
     @Transactional      // jpa의 영속성을 활용할때는 Transactional을 통해 자동으로 DB에 추가가 될 수 있도록 해야한다.
     public PostChangeResponse postupdate(Long id, PostCreateRequest request, String userName) {
-        
-        User user = userException.userDBCheck(userName);
-        Post post = postException.postDBCheck(id);
 
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND,String.format("해당 유저가 없습니다.")));
 
-        postException.rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
+        Post post = postException.optionalPostDBCheck(id)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        Boolean result = postException.rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
+
+        if(result == false)     // postException.rolecheck의 값이 false이면 서로 다른 유저이므로 에외처리
+            throw new AppException(ErrorCode.INVALID_PERMISSION);
 
         if((!request.getTitle().equals(post.getTitle()))||(!request.getBody().equals(post.getBody()))){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
             post.update(request.getTitle(),request.getBody());      // Jpa 영속성을 활용한 update 기능 활용
@@ -111,10 +118,16 @@ public class PostService {
 
     // 5. 게시물 삭제
     public PostChangeResponse postdelete(Long id, String userName) {
-        User user = userException.userDBCheck(userName);
-        Post post = postException.postDBCheck(id);
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND,String.format("해당 유저가 없습니다.")));
 
-        postException.rolecheck(user,userName,post);
+        Post post = postException.optionalPostDBCheck(id)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        Boolean result = postException.rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
+
+        if(result == false)     // postException.rolecheck의 값이 false이면 서로 다른 유저이므로 에외처리
+            throw new AppException(ErrorCode.INVALID_PERMISSION);
 
         likeRepository.deleteAllByPost(post);   // 연결된 모든 like 데이터 삭제
 
