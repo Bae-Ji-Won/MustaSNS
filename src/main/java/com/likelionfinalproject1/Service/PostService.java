@@ -4,7 +4,6 @@ import com.likelionfinalproject1.Domain.Entity.Alarm;
 import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;
-import com.likelionfinalproject1.Domain.UserRole;
 import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Exception.AppException;
@@ -57,10 +56,14 @@ public class PostService {
         return checklist;
     }
 
+
     // --------------------- 게시물 기능 구현 ---------------------------
 
     // 1. 포스트 새로 작성
-    public PostCreateResponse postcreate(PostCreateRequest postCreateRequest, String userName){
+    public PostCreateResponse postCreate(PostCreateRequest postCreateRequest, String userName){
+//        User user = userException.testGetUserByUserName(userName)
+//                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,String.format("해당 유저가 없습니다.")));
+
         User user = userException.getUserByUserName(userName);    // 토큰에서 추출한 userName을 통해 User DB에서 해당 데이터 가져옴
 
         Post post = postRepository.save(postCreateRequest.toEntity(user));  // Post DB에 유저가 입력한 제목,내용 저장

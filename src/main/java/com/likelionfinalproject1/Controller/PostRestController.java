@@ -32,7 +32,7 @@ public class PostRestController {
     @PostMapping
     public Response<PostCreateResponse> postCreate(@RequestBody PostCreateRequest postCreateRequest,Authentication authentication){
         String userName = authentication.getName();     // 토큰에서 userName 추출
-        return Response.success(postService.postcreate(postCreateRequest,userName));
+        return Response.success(postService.postCreate(postCreateRequest,userName));
     }
 
     // 포스트 세부 게시물 출력
