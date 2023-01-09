@@ -22,16 +22,9 @@ public class UserException {
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
     }
 
-    // UserName을 통해 DB에 데이터가 있는지 확인(유저가 존재하는지 확인)  - jwt토큰 설정에서만 사용
-    public User getUserByUserName(String userName) {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_PERMISSION,String.format("해당 유저가 없습니다.")));
-        return user;
-    }
     
-    // PostService - postcreate 에서만 사용
-    public Optional<User> testGetUserByUserName(String userName){
-        Optional<User> user = userRepository.findByUserName(userName);
-        return user;
+    // Junit관련되는 코드에서 사용 - Junit에서 Service부분 Test에서는 예외처리가 Service안에 있어야 하고, Optional.empty()때문에 어쩔수 없이 사용
+    public Optional<User> optionalUserDBCheck(String userName){
+        return userRepository.findByUserName(userName);
     }
 }
