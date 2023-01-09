@@ -70,7 +70,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         log.info("userName:{}",userName);
 
         // UserDetail 가져오기
-        User user = userException.getUserByUserName(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
+        User user = userException.userDBCheck(userName);  // 외부에서 받은 토큰에서 추출한 userName값을 통해 DB에서 해당 데이터를 찾는다.
         log.info("userRole :{}",user.getRole());
 
 // 문 열어주는 곳(인가 허용)
