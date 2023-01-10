@@ -2,6 +2,8 @@ package com.likelionfinalproject1.Repository;
 
 import com.likelionfinalproject1.Domain.Entity.Alarm;
 import com.likelionfinalproject1.Domain.Entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +15,8 @@ import java.util.Optional;
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm,Long> {
     Optional<Alarm> findByTargetIdAndUserIdAndText(Long postid, Long userid,String text);
+
+    Page<Alarm> findByUserId(Long userid, Pageable pageable);
 
     @Transactional
     @Modifying

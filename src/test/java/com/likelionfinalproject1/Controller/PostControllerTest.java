@@ -18,9 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -55,7 +52,7 @@ class PostControllerTest {
         PostCreateRequest request = new PostCreateRequest("title","body");
         PostCreateResponse postCreateResponse = PostCreateResponse.success(0l);
 
-        given(postService.postcreate(any(),any()))
+        given(postService.postCreate(any(),any()))
                 .willReturn(postCreateResponse);
 
         mockMvc.perform(post("/api/v1/posts")
@@ -67,7 +64,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("$..message").exists())
                 .andExpect(jsonPath("$..postId").exists());
 
-        verify(postService).postcreate(any(),any());
+        verify(postService).postCreate(any(),any());
     }
 
     @Test
@@ -77,7 +74,7 @@ class PostControllerTest {
         PostCreateRequest request = new PostCreateRequest("title","body");
         PostCreateResponse postCreateResponse = PostCreateResponse.success(0l);
 
-        given(postService.postcreate(any(),any()))
+        given(postService.postCreate(any(),any()))
                 .willThrow(new AppException(ErrorCode.INVALID_PERMISSION));
 
         mockMvc.perform(post("/api/v1/posts")
@@ -87,7 +84,7 @@ class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
 
-        verify(postService).postcreate(any(),any());
+        verify(postService).postCreate(any(),any());
     }
 
     @Test
