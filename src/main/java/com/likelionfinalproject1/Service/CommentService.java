@@ -129,11 +129,14 @@ public class CommentService {
 
     // 4. 댓글 삭제
     public CommentDeleteResponse commentDelete(Long postid, Long id, String userName) {
-        User user = userException.userDBCheck(userName);
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        Post post = postException.postDBCheck(postid);
+        Post post = postException.optionalPostDBCheck(postid)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        Comment comment = commentException.commentDBCheck(id);
+        Comment comment = commentException.optionalCommentDBCheck(id)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
         rolecheck(user,post,comment);
 
