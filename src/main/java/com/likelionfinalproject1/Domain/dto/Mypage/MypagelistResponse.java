@@ -20,10 +20,10 @@ public class MypagelistResponse {
     private String createdAt;
 
     public Page<MypagelistResponse> toDtoList(Page<Post> postList){
-        // Page<Post>에 저장된 값들을 Page<PostListResponse>형식으로 변환함
-        // 이때 m -> PostListResponse.builder()를 통해 모든 값을 순차적으로 변환함
+        // Page<Post>에 저장된 값들을 Page<MypagelistResponse>형식으로 변환함
+        // 이때 m -> MypagelistResponse.builder()를 통해 모든 값을 순차적으로 변환함
         Page<MypagelistResponse> MyboardDtoList = postList.map(m -> MypagelistResponse.builder()
-                .id(m.getId())          // m(Post)에서 데이터 가져와 PostListResponse에 데이터 삽입
+                .id(m.getId())          // m(Post)에서 데이터 가져와 MypagelistResponse에 데이터 삽입
                 .title(m.getTitle())
                 .body(m.getBody())
                 .userName(m.getUser().getUserName())
