@@ -57,7 +57,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 수정 실패(1) - 포스트 존재하지 않음")
-    void postUpdate_fail_one(){
+    void commentUpdate_fail_one(){
         User user = UserEntityFixture.userEntity(userName,password);
         Post post = PostEntityFixture.postEntity(userName,password);
         Comment comment = CommentEntityFixture.commentEntity(userName,password);
@@ -79,7 +79,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("2. 수정 실패 - 작성자!=유저")
-    void postUpdate_fail_two(){
+    void commentUpdate_fail_two(){
         User user1 = UserEntityFixture.userEntity("user1","1234");
         User user2 = UserEntityFixture.userEntity("user2","1234");
         Post post = PostEntityFixture.postEntity(user2.getUserName(),user2.getPassword());
@@ -99,17 +99,48 @@ class CommentServiceTest {
         AppException appException = Assertions.assertThrows(AppException.class, () -> commentService.commentUpdate(postId,commentId,request,userName));  // commentUpdate의 예외처리중 해당 comment가 없을때 예외처리 발생
         assertEquals(ErrorCode.INVALID_PERMISSION, appException.getErrorCode());
     }
-//
-//
-//    @Test
-//    @DisplayName("3. 수정 실패 - 유저 존재하지 않음")
-//    void postUpdate_fail_three(){
-//        given(userException.optionalUserDBCheck(userName))
-//                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
-//
-//        PostCreateRequest request = new PostCreateRequest(title,body);
-//
-//        AppException appException = Assertions.assertThrows(AppException.class, () -> postService.postupdate(postId,request,userName));
-//        assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
-//    }
+
+    @Test
+    @DisplayName("3. 수정 실패 - 유저 존재하지 않음")
+    void commentUpdate_fail_three(){
+        given(userException.optionalUserDBCheck(userName))
+                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
+
+        CommentRequest request = new CommentRequest("update comment");
+
+        AppException appException = Assertions.assertThrows(AppException.class, () -> commentService.commentUpdate(postId,commentId,request,userName));  // commentUpdate의 예외처리중 해당 comment가 없을때 예외처리 발생
+        assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패(1) - 유저 존재하지 않음")
+    void commentDelete_fail_one(){
+        given(userException.optionalUserDBCheck(userName))
+                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
+
+
+        AppException appException = Assertions.assertThrows(AppException.class, () -> commentService.commentDelete(postId,commentId,userName));  // commentUpdate의 예외처리중 해당 comment가 없을때 예외처리 발생
+        assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("댓글 수정 실패(2) - 댓글이 존재하지 않음")
+    void commentDelete_fail_two(){
+        User user = UserEntityFixture.userEntity(userName,password);
+        Post post = PostEntityFixture.postEntity(userName,password);
+        Comment comment = CommentEntityFixture.commentEntity(userName,password);
+
+        given(userException.optionalUserDBCheck(userName))
+                .willReturn(Optional.of(user));     // 유저 데이터 존재
+
+        given(postException.optionalPostDBCheck(postId))
+                .willReturn(Optional.of(post));      // 포스트 데이터 존재
+
+        given(commentException.optionalCommentDBCheck(commentId))
+                .willReturn(Optional.empty());      // 댓글에 대한 데이터가 없을경우
+
+
+        AppException appException = Assertions.assertThrows(AppException.class, () -> commentService.commentDelete(postId,commentId,userName));  // commentUpdate의 예외처리중 해당 comment가 없을때 예외처리 발생
+        assertEquals(ErrorCode.COMMENT_NOT_FOUND, appException.getErrorCode());
+    }
 }
