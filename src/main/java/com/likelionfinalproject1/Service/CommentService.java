@@ -29,8 +29,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentService {
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+
     private final CommentRepository commentRepository;
 
     private final AlarmRepository alarmRepository;
@@ -69,6 +68,8 @@ public class CommentService {
         }
     }
 
+
+
     // ---------------------------- 기능 구현 ------------------------
 
     // 1. 댓글 생성
@@ -105,14 +106,19 @@ public class CommentService {
     // 3. 댓글 수정
     @Transactional
     public CommentResponse commentUpdate(Long postid, Long id, CommentRequest request, String userName) {
-        User user = userException.userDBCheck(userName);
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        Post post = postException.postDBCheck(postid);
+        Post post = postException.optionalPostDBCheck(postid)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        Comment comment = commentException.commentDBCheck(id);
+        Comment comment = commentException.optionalCommentDBCheck(id)
+                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
-        rolecheck(user,post,comment);
+        Boolean result = postException.rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
 
+        if(result == false)     // postException.rolecheck의 값이 false이면 서로 다른 유저이므로 에외처리
+            throw new AppException(ErrorCode.INVALID_PERMISSION);
 
         if(!request.getComment().equals(comment.getComment())){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
             comment.update(request.getComment());      // Jpa 영속성을 활용한 update 기능 활용
@@ -123,11 +129,14 @@ public class CommentService {
 
     // 4. 댓글 삭제
     public CommentDeleteResponse commentDelete(Long postid, Long id, String userName) {
-        User user = userException.userDBCheck(userName);
+        User user = userException.optionalUserDBCheck(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        Post post = postException.postDBCheck(postid);
+        Post post = postException.optionalPostDBCheck(postid)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        Comment comment = commentException.commentDBCheck(id);
+        Comment comment = commentException.optionalCommentDBCheck(id)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
         rolecheck(user,post,comment);
 

@@ -8,6 +8,8 @@ import com.likelionfinalproject1.Repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Component
 public class CommentException {
@@ -19,4 +21,9 @@ public class CommentException {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
     }
+
+    public Optional<Comment> optionalCommentDBCheck(Long id){
+        return commentRepository.findById(id);
+    }
+
 }

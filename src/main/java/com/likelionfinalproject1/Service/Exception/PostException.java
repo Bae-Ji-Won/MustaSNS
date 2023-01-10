@@ -21,7 +21,7 @@ public class PostException {
     // 게시물 번호에 대한 게시물 데이터를 가져오고 DB에 Post 데이터가 있는지 확인
     public Post postDBCheck(Long id){
         return postRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
     }
 
     // Junit관련되는 코드에서 사용 - Junit에서 Service부분 Test에서는 예외처리가 Service안에 있어야 하고, Optional.empty()때문에 어쩔수 없이 사용
