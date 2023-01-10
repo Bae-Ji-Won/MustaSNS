@@ -22,9 +22,9 @@
 ☑ 포스트 작성, 수정, 삭제, 리스트<br>
 ☑ 댓글 작성, 수정, 삭제, 리스트<br>
 ☑ 좋아요 누르기, 취소하기, 해당 게시물의 총 개수 구하기<br>
-☑ 마이피드
-☑ 알림
-☑ Swagger에 ApiOperation을 써서 Controller 간단 설명하기
+☑ 마이피드<br>
+☑ 알림<br>
+☑ Swagger에 ApiOperation을 써서 Controller 간단 설명하기<br>
 
 ### 도전 과제
 ❌ 화면 UI 개발 - 회원가입, 로그인, 글쓰기, 조회, 댓글, 좋아요, 알림<br>
