@@ -4,7 +4,6 @@ import com.likelionfinalproject1.Domain.Entity.User;
 import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.User.*;
 import com.likelionfinalproject1.Service.UserService;
-import com.likelionfinalproject1.Swagger.Lock;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +55,6 @@ public class UserRestController {
     }
 
     // 관리자 권한 부여 기능 userid를 보냄
-    @Lock
     @ApiOperation(value = "권한 변경", notes = "관리자가 일반 유저의 권한을 변경할 수 있음")
     @PostMapping("/{id}/role/change")
     public Response<String> userToAdmin(@PathVariable(name = "id")Long userid, Authentication authentication){

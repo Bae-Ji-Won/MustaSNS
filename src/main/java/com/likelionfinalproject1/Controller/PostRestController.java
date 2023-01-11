@@ -6,7 +6,6 @@ import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Service.CommentService;
 import com.likelionfinalproject1.Service.PostService;
-import com.likelionfinalproject1.Swagger.Lock;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ public class PostRestController {
     private final CommentService commentService;
 
     // 포스트 작성하기
-    @Lock
     @ApiOperation(value = "포스트 작성", notes = "유저에게 title,body입력받아 게시물 작성")
     @Transactional      // 에러 발생하면 롤백시켜 실행전 상태로 만든다.
     @PostMapping
@@ -56,7 +54,6 @@ public class PostRestController {
     }
 
     // 게시글 수정
-    @Lock
     @ApiOperation(value = "포스트 수정", notes = "기존의 포스트 정보를 새로운 내용으로 수정함")
     @PutMapping("/{id}")
     public Response<PostChangeResponse> postUpdate(@RequestBody PostCreateRequest request,@PathVariable Long id,  Authentication authentication){
@@ -65,7 +62,6 @@ public class PostRestController {
     }
 
     // 게시글 삭제
-    @Lock
     @ApiOperation(value = "포스트 삭제", notes = "기존의 저장되어 있는 포스트를 삭제함")
     @DeleteMapping("/{id}")
     public Response<PostChangeResponse> postDelete(@PathVariable Long id,Authentication authentication){
@@ -77,7 +73,6 @@ public class PostRestController {
     // ---------------------- 댓글 ---------------------
 
     // 댓글 작성
-    @Lock
     @ApiOperation(value = "댓글 작성", notes = "유저가 원하는 포스트에 댓글 작성")
     @PostMapping("/{postsId}/comments")
     public Response<CommentResponse> commentCreate(@PathVariable(name = "postsId")Long id, @RequestBody CommentRequest request, Authentication auth){
@@ -97,7 +92,6 @@ public class PostRestController {
     }
 
     // 댓글 수정
-    @Lock
     @ApiOperation(value = "댓글 수정", notes = "기존의 댓글을 수정함")
     @PutMapping("/{postId}/comments/{id}")
     public Response<CommentResponse> commentUpdate(@PathVariable(name = "postId")Long postid, @PathVariable(name="id")Long id,@RequestBody CommentRequest request, Authentication auth){
@@ -107,7 +101,6 @@ public class PostRestController {
     }
 
     // 댓글 삭제
-    @Lock
     @ApiOperation(value = "댓글 삭제", notes = "기존의 댓글을 삭제함")
     @DeleteMapping("{postsId}/comments/{id}")
     public Response<CommentDeleteResponse> commentDelete(@PathVariable(name = "postsId")Long postid, @PathVariable(name="id")Long id, Authentication auth){
@@ -120,7 +113,6 @@ public class PostRestController {
     // ---------------------- 좋아요 ---------------------
 
     // 좋아요 누르기
-    @Lock
     @ApiOperation(value = "좋아요 누르기", notes = "해당 포스트에 대한 좋아요 누름")
     @PostMapping("/{postId}/likes")
     public Response<String> postLike(@PathVariable(name = "postId")Long id, Authentication auth){
@@ -139,7 +131,6 @@ public class PostRestController {
 
 
     // ---------------------- 마이 피드 ---------------------
-    @Lock
     @ApiOperation(value = "마이 피드", notes = "자신이 작성한 게시물 출력")
     @GetMapping("/my")
     public Response<Page<MypagelistResponse>> myPage(Authentication auth,Pageable pageable){
