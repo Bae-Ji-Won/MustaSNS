@@ -115,10 +115,7 @@ public class CommentService {
         Comment comment = commentException.optionalCommentDBCheck(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DATABASE_ERROR));
 
-        Boolean result = postException.rolecheck(user,userName,post);          // 권한 확인(관리자나 게시물 작성자인지 아닌지 확인)
-
-        if(result == false)     // postException.rolecheck의 값이 false이면 서로 다른 유저이므로 에외처리
-            throw new AppException(ErrorCode.INVALID_PERMISSION);
+        rolecheck(user,post,comment);       // 댓글 작성자와 현재 유저이름 비교
 
         if(!request.getComment().equals(comment.getComment())){     // 서버에 저장되어 있는 데이터와 유저가 새로 입력한 데이터가 다를경우 덮어씌움
             comment.update(request.getComment());      // Jpa 영속성을 활용한 update 기능 활용
