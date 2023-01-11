@@ -3,7 +3,6 @@ package com.likelionfinalproject1.Controller;
 import com.likelionfinalproject1.Domain.Response;
 import com.likelionfinalproject1.Domain.dto.Alarm.AlarmDto;
 import com.likelionfinalproject1.Service.AlarmService;
-import com.likelionfinalproject1.Swagger.Lock;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
