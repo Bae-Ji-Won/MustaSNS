@@ -10,7 +10,7 @@
 ![dd](/uploads/de457db5be35cd2c2e098aab67775b85/dd.png)
 
 ## 3. ERD
-<img src="/uploads/7b35c8191e0e1b2efcd60b92f4ecf667/erd.png" width="400"></img>
+<img src="/uploads/adc9615ef6eafa9ba46ef4523aef050b/erd.png" width="400"></img>
 
 ## 4. 체크리스트
 ### 필수 과제
