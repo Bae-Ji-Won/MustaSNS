@@ -10,8 +10,6 @@ import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Fixture.PostEntityFixture;
 import com.likelionfinalproject1.Fixture.UserEntityFixture;
 import com.likelionfinalproject1.Repository.*;
-import com.likelionfinalproject1.Service.Exception.AlarmException;
-import com.likelionfinalproject1.Service.Exception.LikeException;
 import com.likelionfinalproject1.Service.Exception.PostException;
 import com.likelionfinalproject1.Service.Exception.UserException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +17,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-
-
 import static org.mockito.Mockito.*;
 
 
@@ -44,15 +36,12 @@ class PostServiceTest {
     CommentRepository commentRepository = mock(CommentRepository.class);
     PostException postException = mock(PostException.class);
     UserException userException = mock(UserException.class);
-    LikeException likeException = mock(LikeException.class);
-    AlarmException alarmException = mock(AlarmException.class);
 
     // PostService에 Di를 통해 의존된 클래스를 TestCase에서는 생성자를 통해 의존시켜줌
     @BeforeEach
     void setUp(){
-        postService = new PostService(postRepository, likeRepository,alarmRepository,commentRepository,postException,userException,likeException,alarmException);
+        postService = new PostService(postRepository, likeRepository,alarmRepository,commentRepository,postException,userException);
     }
-
 
     Long postId = 1l;
     Long userId = 1l;
@@ -70,8 +59,8 @@ class PostServiceTest {
         Post mockpost = mock(Post.class);       // (Response) post entity 임의 mock 생성
         User mockuser = mock(User.class);       // (Response) user entity 임의 생성
 
-        when(userException.optionalUserDBCheck(userName))
-                .thenReturn(Optional.of(mockuser));          // userName을 통한 DB에서 user데이터 찾고 해당 Entity 반환
+        when(userException.userDBCheck(userName))
+                .thenReturn(mockuser);          // userName을 통한 DB에서 user데이터 찾고 해당 Entity 반환
         when(postRepository.save(any()))
                 .thenReturn(mockpost);          // post DB저장후 해당 데이터 Post Entity 반환
 
@@ -84,8 +73,8 @@ class PostServiceTest {
     @DisplayName("포스트 등록 실패 - 로그인 안함")
     void postCreate_fail(){
 
-        when(userException.optionalUserDBCheck(userName))
-                    .thenReturn(Optional.empty());           // userName을 통해 DB에서 해당 데이터를 찾았지만 없을 경우 상황 설정
+        when(userException.userDBCheck(userName))
+                    .thenThrow(new AppException(ErrorCode.USERNAME_NOT_FOUND));           // userName을 통해 DB에서 해당 데이터를 찾았지만 없을 경우 상황 설정
         when(postRepository.save(any()))
                     .thenReturn(PostEntityFixture.postEntity("han","1234"));    // 포스트 데이터 저장
 
@@ -113,11 +102,11 @@ class PostServiceTest {
     void postUpdate_fail_one(){
         User user = UserEntityFixture.userEntity(userName,password);
 
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.of(user));
+        given(userException.userDBCheck(userName))
+                .willReturn(user);
 
-        given(postException.optionalPostDBCheck(postId))
-                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
+        given(postException.postDBCheck(postId))
+                .willThrow(new AppException(ErrorCode.POST_NOT_FOUND));      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
 
         PostCreateRequest request = new PostCreateRequest(title,body);
 
@@ -131,11 +120,16 @@ class PostServiceTest {
         User user1 = UserEntityFixture.userEntity("user1","1234");
         User user2 = UserEntityFixture.userEntity("user2","1234");
 
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.of(user2));                 // 현재 Post를 업데이트 할려고 하는 사람은 user2임
+        Post post = PostEntityFixture.postEntity(user1.getUserName(),user1.getPassword());
 
-        given(postException.optionalPostDBCheck(postId))
-                .willReturn(Optional.of(PostEntityFixture.postEntity(user1.getUserName(),user1.getPassword())));      // 현재 Post의 작성자는 user1임
+        given(userException.userDBCheck(userName))
+                .willReturn(user2);                 // 현재 Post를 업데이트 할려고 하는 사람은 user2임
+
+        given(postException.postDBCheck(postId))
+                .willReturn(post);      // 현재 Post의 작성자는 user1임
+
+        given(postException.rolecheck(user2,post))
+                .willThrow(new AppException(ErrorCode.INVALID_PERMISSION));
 
         PostCreateRequest request = new PostCreateRequest(title,body);
 
@@ -147,8 +141,8 @@ class PostServiceTest {
     @Test
     @DisplayName("3. 수정 실패 - 유저 존재하지 않음")
     void postUpdate_fail_three(){
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
+        given(userException.userDBCheck(userName))
+                .willThrow(new AppException(ErrorCode.USERNAME_NOT_FOUND));      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
 
         PostCreateRequest request = new PostCreateRequest(title,body);
 
@@ -159,9 +153,8 @@ class PostServiceTest {
     @Test
     @DisplayName("1. 게시물 삭제 실패 - 유저 존재하지 않음")
     void postDelete_fail_one(){
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
-
+        given(userException.userDBCheck(userName))
+                .willThrow(new AppException(ErrorCode.USERNAME_NOT_FOUND));      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
 
         AppException appException = Assertions.assertThrows(AppException.class, () -> postService.postdelete(postId,userName));
         assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
@@ -172,11 +165,11 @@ class PostServiceTest {
     void postDelete_fail_two(){
         User user = UserEntityFixture.userEntity(userName,password);
 
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.of(user));
+        given(userException.userDBCheck(userName))
+                .willReturn(user);
 
-        given(postException.optionalPostDBCheck(postId))
-                .willReturn(Optional.empty());      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
+        given(postException.postDBCheck(postId))
+                .willThrow(new AppException(ErrorCode.POST_NOT_FOUND));      // postId를 통해 해당 Post Entity 데이터 찾지만 해당 데이터는 없음
 
 
         AppException appException = Assertions.assertThrows(AppException.class, () -> postService.postdelete(postId,userName));
@@ -188,12 +181,16 @@ class PostServiceTest {
     void postDelete_fail_three(){
         User user1 = UserEntityFixture.userEntity("user1","1234");
         User user2 = UserEntityFixture.userEntity("user2","1234");
+        Post post = PostEntityFixture.postEntity(user1.getUserName(),user1.getPassword());
 
-        given(userException.optionalUserDBCheck(userName))
-                .willReturn(Optional.of(user2));                 // 현재 Post를 업데이트 할려고 하는 사람은 user2임
+        given(userException.userDBCheck(userName))
+                .willReturn(user2);                 // 현재 Post를 업데이트 할려고 하는 사람은 user2임
 
-        given(postException.optionalPostDBCheck(postId))
-                .willReturn(Optional.of(PostEntityFixture.postEntity(user1.getUserName(),user1.getPassword())));      // 현재 Post의 작성자는 user1임
+        given(postException.postDBCheck(postId))
+                .willReturn(post);      // 현재 Post의 작성자는 user1임
+
+        given(postException.rolecheck(user2,post))
+                .willThrow(new AppException(ErrorCode.INVALID_PERMISSION));
 
         AppException appException = Assertions.assertThrows(AppException.class, () -> postService.postdelete(postId,userName));
         assertEquals(ErrorCode.INVALID_PERMISSION, appException.getErrorCode());

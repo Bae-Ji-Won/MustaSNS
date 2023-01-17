@@ -5,6 +5,7 @@ import com.likelionfinalproject1.Domain.dto.Comment.*;
 import com.likelionfinalproject1.Domain.dto.Mypage.MypagelistResponse;
 import com.likelionfinalproject1.Domain.dto.Post.*;
 import com.likelionfinalproject1.Service.CommentService;
+import com.likelionfinalproject1.Service.LikeService;
 import com.likelionfinalproject1.Service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class PostRestController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     // 포스트 작성하기
     @ApiOperation(value = "포스트 작성", notes = "유저에게 title,body입력받아 게시물 작성")
@@ -117,7 +119,7 @@ public class PostRestController {
     @PostMapping("/{postId}/likes")
     public Response<String> postLike(@PathVariable(name = "postId")Long id, Authentication auth){
         String userName = auth.getName();
-        String str = postService.postlike(id,userName);
+        String str = likeService.postlike(id,userName);
         return Response.success(str);
     }
 
@@ -126,7 +128,7 @@ public class PostRestController {
     @ApiOperation(value = "좋아요 총 개수 출력", notes = "해당 포스트에 대한 좋아요 총 개수 출력")
     @GetMapping("/{postsId}/likes")
     public Response<Integer> postLikeCount(@PathVariable(name = "postsId")Long id){
-        return Response.success(postService.postlikecount(id));
+        return Response.success(likeService.postlikecount(id));
     }
 
 
