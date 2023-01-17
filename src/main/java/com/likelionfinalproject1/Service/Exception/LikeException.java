@@ -1,6 +1,5 @@
 package com.likelionfinalproject1.Service.Exception;
 
-import com.likelionfinalproject1.Domain.Entity.Comment;
 import com.likelionfinalproject1.Domain.Entity.Like;
 import com.likelionfinalproject1.Domain.Entity.Post;
 import com.likelionfinalproject1.Domain.Entity.User;

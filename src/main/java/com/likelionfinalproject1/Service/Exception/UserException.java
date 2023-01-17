@@ -6,7 +6,6 @@ import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -20,11 +19,5 @@ public class UserException {
     public User userDBCheck(String userName){
         return userRepository.findByUserName(userName)
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
-    }
-
-    
-    // Junit관련되는 코드에서 사용 - Junit에서 Service부분 Test에서는 예외처리가 Service안에 있어야 하고, Optional.empty()때문에 어쩔수 없이 사용
-    public Optional<User> optionalUserDBCheck(String userName){
-        return userRepository.findByUserName(userName);
     }
 }
