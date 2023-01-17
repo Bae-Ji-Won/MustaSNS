@@ -16,8 +16,8 @@ import com.likelionfinalproject1.Exception.ErrorCode;
 import com.likelionfinalproject1.Fixture.PostEntityFixture;
 import com.likelionfinalproject1.Fixture.UserEntityFixture;
 import com.likelionfinalproject1.Service.CommentService;
+import com.likelionfinalproject1.Service.LikeService;
 import com.likelionfinalproject1.Service.PostService;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -31,9 +31,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -57,6 +54,9 @@ class PostRestControllerTest {
 
     @MockBean   // 가짜 객체
     PostService postService;
+
+    @MockBean
+    LikeService likeService;
 
     @MockBean
     CommentService commentService;
@@ -589,7 +589,7 @@ class PostRestControllerTest {
     @DisplayName("좋아요 누르기(2) - 게시물이 존재하지 않는 경우")
     @WithMockUser
     void pushLike_Fail_two() throws Exception {
-        given(postService.postlike(any(),any()))
+        given(likeService.postlike(any(),any()))
                 .willThrow(new AppException(ErrorCode.POST_NOT_FOUND));
 
         mockMvc.perform(post("/api/v1/posts/1/likes")
