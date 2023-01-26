@@ -7,10 +7,10 @@
 
 
 ## 2. 아키텍처
-![dd](/uploads/de457db5be35cd2c2e098aab67775b85/dd.png)
+![dd](https://user-images.githubusercontent.com/82360230/209614061-41fc6c31-0d70-40c2-b2aa-b2e13865d045.png)
 
 ## 3. ERD
-<img src="/uploads/7b35c8191e0e1b2efcd60b92f4ecf667/erd.png" width="400"></img>
+<img src="https://user-images.githubusercontent.com/82360230/214830363-c2f838d4-3ab9-4af9-bf0d-13ba8357c4c2.png" width="400"></img>
 
 ## 4. 체크리스트
 ### 필수 과제
