@@ -1,4 +1,5 @@
-# 웹페이지 구현하기 Project
+# 개인 프로젝트
+커뮤니티 웹 
 
 ## 1. Swagger
 (1) Local Url : http://localhost:8080/swagger-ui/
