@@ -127,7 +127,7 @@
    - PostController, PostService Test Code Refactoring
    - CommentService Test Code Add
 
-## 6. EndPoint 
+## 6.  EndPoint 
 
 > 로그인
 
