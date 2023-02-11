@@ -14,7 +14,7 @@
 <img src="https://user-images.githubusercontent.com/82360230/214830363-c2f838d4-3ab9-4af9-bf0d-13ba8357c4c2.png" width="400"></img>
 
 ## 4. 체크리스트
-### 필수 과제
+### 필수  과제
 ☑ 회원가입<br>
 ☑ Swagger<br>
 ☑ AWS EC2에 Docker 배포<br>
