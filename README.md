@@ -40,7 +40,7 @@
 > #### 1일차
 (1) Swagger
     - Swagger와 연동하였습니다.
-    - Swagger를 통해 api 통신을 하였습니다.<
+    - Swagger를 통해 api 통신을 하였습니다.
     - 정리글 : https://velog.io/@qowl880/Rest-API-Swagger
 
 (2) DOCKER를 통한 AWS EC2 배포
