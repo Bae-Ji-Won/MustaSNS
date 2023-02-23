@@ -212,7 +212,6 @@ Api url : GET /api/v1/alarms
 ## 🙏 Commit 규칙
 
 ```jsx
-소문자로 작성!
     git commit -m "[feat]갤러리 무한스크롤 기능 구현"
 ```
 
