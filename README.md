@@ -1,7 +1,7 @@
 # 개인 프로젝트
 커뮤니티 웹 
 
-## 1. Swagger
+## 1. Swagger 
 (1) Local Url : http://localhost:8080/swagger-ui/
 <br>
 (2) Ec2 Url : http://ec2-18-209-240-235.compute-1.amazonaws.com:8080/swagger-ui/index.html <br><br>
