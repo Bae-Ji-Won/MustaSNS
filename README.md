@@ -25,7 +25,7 @@
 ☑ 좋아요 누르기, 취소하기, 해당 게시물의 총 개수 구하기<br>
 ☑ 마이피드<br>
 ☑ 알림<br>
-☑ Swagger에 ApiOperation을 써서 Controller 간단 설명하기<br>
+☑ Swagger에 ApiOperation을 써서 Controller 간단 설명하기 <br>
 
 ### 도전 과제
 ☑ADMIN 회원으로 등급업하는 기능<br>
